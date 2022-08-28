@@ -6,12 +6,13 @@ import {
   isObject,
   isString,
 } from "./deps.ts";
-import { Recipe, RecipePage, TatakuModule } from "./types.ts";
+import { Kind, Recipe, RecipePage, TatakuModule } from "./types.ts";
 
 /**
  * Return `true` if the type of `x` is `async function`.
  *
  * @example
+ * ```typescript
  * const foo = async () => { return Promise.resolve(42) }
  * isAsyncFunction(foo)
  * // true
@@ -19,6 +20,7 @@ import { Recipe, RecipePage, TatakuModule } from "./types.ts";
  * const bar = () => { return 42 }
  * isAsyncFunction(bar)
  * // false
+ * ```
  */
 export function isAsyncFunction(
   x: unknown,
@@ -31,6 +33,7 @@ export function isAsyncFunction(
  * Return `true` if the type of `x` is `TatakuModule`
  *
  * @example
+ * ```typescript
  * const foo = { run: (denops: Denops, Option: Record<string, unknown>) => { return Promise.resolve(["42"]) } }
  * isTatakuModule(foo)
  * // true
@@ -42,22 +45,46 @@ export function isAsyncFunction(
  * const spam = { run: 42 }
  * isTatakuModule(spam)
  * // false
+ * ```
  */
-export function isTatakuModule<T>(x: Record<string, unknown>): x is TatakuModule<T> {
-  return (isObject(x, isFunction) || isObject(x, isAsyncFunction)) &&
-    "run" in x;
+export function isTatakuModule(x: Record<string, unknown>): x is TatakuModule {
+  return "run" in x && (isFunction(x.run) || isAsyncFunction(x.run));
 }
 
+/**
+ * Return `true` if the type of `x` is `Recipe`
+ *
+ * @example
+ * ```typescript
+ * const r = {
+ *   collector: { name: "sample", options: {}, },
+ *   processor: [{ name: "sample", options: {}, },],
+ *   emitter: { name: "sample", options: {}, },
+ *   }
+ * isRecipe(r)
+ * // true
+ * ```
+ */
 export function isRecipe(x: Record<string, unknown>): x is Recipe {
-  const acceptInputter = "inputter" in x && isObject(x.inputter) &&
-    isRecipePage(x.inputter);
+  const acceptCollector = "collector" in x && isObject(x.collector) &&
+    isRecipePage(x.collector);
   const acceptProcessor = "processor" in x && isArray(x.processor, isObject) &&
     x.processor.every((p) => isRecipePage(p));
-  const acceptOutputter = "outputter" in x && isObject(x.outputter) &&
-    isRecipePage(x.outputter);
-  return acceptInputter && acceptProcessor && acceptOutputter;
+  const acceptEmitter = "emitter" in x && isObject(x.emitter) &&
+    isRecipePage(x.emitter);
+  return acceptCollector && acceptProcessor && acceptEmitter;
 }
 
+/**
+ * Return `true` if the type of `x` is `RecipePage`
+ *
+ * @example
+ * ```typescript
+ * const r = { name: "sample", options: {}, }
+ * isRecipePage(r)
+ * // true
+ * ```
+ */
 export function isRecipePage(x: Record<string, unknown>): x is RecipePage {
   const acceptName = "name" in x && isString(x.name);
   const acceptOptions = "options" in x && isObject(x.options);
@@ -68,8 +95,10 @@ export function isRecipePage(x: Record<string, unknown>): x is RecipePage {
  * Echo error message with `[tataku]` as prefix
  *
  * @example
+ * ```typescript
  * echoError(denops, "message")
  * // show error in vim/neovim
+ * ```
  */
 export async function echoError(denops: Denops, msg: string): Promise<void> {
   await echoerr(denops, `[tataku] ${msg}`);
