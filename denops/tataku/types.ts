@@ -1,9 +1,9 @@
 import { Denops } from "./deps.ts";
 
 export type Recipe = {
-  inputter: RecipePage;
+  collector: RecipePage;
   processor: RecipePage[];
-  outputter: RecipePage;
+  emitter: RecipePage;
 };
 
 export type RecipePage = {
@@ -11,27 +11,29 @@ export type RecipePage = {
   options: Record<string, unknown>;
 };
 
+export type Kind = "collector" | "processor" | "emitter";
+
 export type Query = {
-  type: "inputter" | "processor" | "outputter";
+  kind: Kind;
   name: string;
 };
 
 export type TatakuModule = {
-  run: TatakuInputterMethod | TatakuProcessorMethod | TatakuOutputterMethod;
+  run: Collector | Processor | Emitter;
 };
 
-export type TatakuInputterMethod = (
+export type Collector = (
   denops: Denops,
   options: Record<string, unknown>,
 ) => Promise<string[]>;
 
-export type TatakuProcessorMethod = (
+export type Processor = (
   denops: Denops,
   options: Record<string, unknown>,
   source: string[],
 ) => Promise<string[]>;
 
-export type TatakuOutputterMethod = (
+export type Emitter = (
   denops: Denops,
   options: Record<string, unknown>,
   source: string[],

@@ -1,7 +1,5 @@
 import { Denops, ensureArray, fn, isString, op, toFileUrl } from "./deps.ts";
-
 import { isTatakuModule } from "./utils.ts";
-
 import { Query, TatakuModule } from "./types.ts";
 
 export async function loadTatakuModule(
@@ -10,7 +8,7 @@ export async function loadTatakuModule(
 ): Promise<
   [TatakuModule, null] | [null, Error]
 > {
-  const expectedPath = `@tataku/${query.type}/${query.name}.ts`;
+  const expectedPath = `@tataku/${query.kind}/${query.name}.ts`;
   const founds = ensureArray(
     await fn.globpath(
       denops,

@@ -1,8 +1,8 @@
 import { Denops, ensureObject } from "./deps.ts";
 import {
-  TatakuInputterMethod,
-  TatakuOutputterMethod,
-  TatakuProcessorMethod,
+  Collector,
+  Emitter,
+  Processor,
 } from "./types.ts";
 import { echoError, isRecipe } from "./utils.ts";
 import { loadTatakuModule } from "./tataku.ts";
@@ -13,16 +13,17 @@ export async function main(denops: Denops): Promise<void> {
       const ensuredRecipe = ensureObject(recipe);
 
       if (!isRecipe(ensuredRecipe)) {
-        echoError(denops, `The recipe is invalid format ${ensuredRecipe}`);
+        echoError(denops, `The recipe is invalid format: ${ensuredRecipe}`);
         return;
       }
 
       let results: string[] = [];
 
+      // absorber
       {
-        const [inputter, err] = await loadTatakuModule(denops, {
-          type: "inputter",
-          name: ensuredRecipe.inputter.name,
+        const [collector, err] = await loadTatakuModule(denops, {
+          kind: "collector",
+          name: ensuredRecipe.collector.name,
         });
 
         if (err !== null) {
@@ -30,41 +31,41 @@ export async function main(denops: Denops): Promise<void> {
           return;
         }
 
-        results = await (inputter.run as TatakuInputterMethod)(
+        results = await (collector.run as Collector)(
           denops,
-          ensuredRecipe.inputter.options,
+          ensuredRecipe.collector.options,
         );
       }
 
       for (const recipe of ensuredRecipe.processor) {
         const [processor, err] = await loadTatakuModule(denops, {
-          type: "processor",
+          kind: "processor",
           name: recipe.name,
         });
         if (err !== null) {
           echoError(denops, err.message);
           return;
         }
-        results = await (processor.run as TatakuProcessorMethod)(
+        results = await (processor.run as Processor)(
           denops,
           recipe.options,
           results,
         );
       }
 
-      // output
+      // emitter
       {
-        const [outputter, err] = await loadTatakuModule(denops, {
-          type: "outputter",
-          name: ensuredRecipe.outputter.name,
+        const [emitter, err] = await loadTatakuModule(denops, {
+          kind: "emitter",
+          name: ensuredRecipe.emitter.name,
         });
         if (err !== null) {
           echoError(denops, err.message);
           return;
         }
-        await (outputter.run as TatakuOutputterMethod)(
+        await (emitter.run as Emitter)(
           denops,
-          ensuredRecipe.outputter.options,
+          ensuredRecipe.emitter.options,
           results,
         );
       }
