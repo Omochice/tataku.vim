@@ -103,3 +103,22 @@ export function isRecipePage(x: Record<string, unknown>): x is RecipePage {
 export async function echoError(denops: Denops, msg: string): Promise<void> {
   await echoerr(denops, `[tataku] ${msg}`);
 }
+
+export async function handleError(
+  denops: Denops,
+  kind: Kind,
+  name: string,
+  error: unknown,
+) {
+  if (error instanceof Error) {
+    await echoError(
+      denops,
+      `Error occured in ${kind}-${name}: ${error.message}`,
+    );
+  } else {
+    await echoError(
+      denops,
+      `Unexpected throwing in ${kind}-${name}: ${error}`,
+    );
+  }
+}

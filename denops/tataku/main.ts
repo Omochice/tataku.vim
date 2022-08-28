@@ -1,10 +1,6 @@
 import { Denops, ensureObject } from "./deps.ts";
-import {
-  Collector,
-  Emitter,
-  Processor,
-} from "./types.ts";
-import { echoError, isRecipe } from "./utils.ts";
+import { Collector, Emitter, Processor } from "./types.ts";
+import { echoError, handleError, isRecipe } from "./utils.ts";
 import { loadTatakuModule } from "./tataku.ts";
 
 export async function main(denops: Denops): Promise<void> {
@@ -19,7 +15,7 @@ export async function main(denops: Denops): Promise<void> {
 
       let results: string[] = [];
 
-      // absorber
+      // collector
       {
         const [collector, err] = await loadTatakuModule(denops, {
           kind: "collector",
@@ -27,14 +23,24 @@ export async function main(denops: Denops): Promise<void> {
         });
 
         if (err !== null) {
-          echoError(denops, err.message);
+          await echoError(denops, err.message);
           return;
         }
 
-        results = await (collector.run as Collector)(
-          denops,
-          ensuredRecipe.collector.options,
-        );
+        try {
+          results = await (collector.run as Collector)(
+            denops,
+            ensuredRecipe.collector.options,
+          );
+        } catch (e) {
+          await handleError(
+            denops,
+            "collector",
+            ensuredRecipe.collector.name,
+            e,
+          );
+          return;
+        }
       }
 
       for (const recipe of ensuredRecipe.processor) {
@@ -43,14 +49,24 @@ export async function main(denops: Denops): Promise<void> {
           name: recipe.name,
         });
         if (err !== null) {
-          echoError(denops, err.message);
+          await echoError(denops, err.message);
           return;
         }
-        results = await (processor.run as Processor)(
-          denops,
-          recipe.options,
-          results,
-        );
+        try {
+          results = await (processor.run as Processor)(
+            denops,
+            recipe.options,
+            results,
+          );
+        } catch (e) {
+          await handleError(
+            denops,
+            "collector",
+            ensuredRecipe.collector.name,
+            e,
+          );
+          return;
+        }
       }
 
       // emitter
@@ -60,14 +76,24 @@ export async function main(denops: Denops): Promise<void> {
           name: ensuredRecipe.emitter.name,
         });
         if (err !== null) {
-          echoError(denops, err.message);
+          await echoError(denops, err.message);
           return;
         }
-        await (emitter.run as Emitter)(
-          denops,
-          ensuredRecipe.emitter.options,
-          results,
-        );
+        try {
+          await (emitter.run as Emitter)(
+            denops,
+            ensuredRecipe.emitter.options,
+            results,
+          );
+        } catch (e) {
+          await handleError(
+            denops,
+            "collector",
+            ensuredRecipe.collector.name,
+            e,
+          );
+          return;
+        }
       }
     },
   };
