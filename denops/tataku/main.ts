@@ -61,8 +61,8 @@ export async function main(denops: Denops): Promise<void> {
         } catch (e) {
           await handleError(
             denops,
-            "collector",
-            ensuredRecipe.collector.name,
+            "processor",
+            recipe.name,
             e,
           );
           return;
@@ -88,8 +88,8 @@ export async function main(denops: Denops): Promise<void> {
         } catch (e) {
           await handleError(
             denops,
-            "collector",
-            ensuredRecipe.collector.name,
+            "emitter",
+            ensuredRecipe.emitter.name,
             e,
           );
           return;
