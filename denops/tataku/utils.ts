@@ -1,11 +1,4 @@
-import {
-  Denops,
-  echoerr,
-  isArray,
-  isFunction,
-  isObject,
-  isString,
-} from "./deps.ts";
+import { Denops, isArray, isFunction, isObject, isString } from "./deps.ts";
 import { Kind, Recipe, RecipePage, TatakuModule } from "./types.ts";
 
 /**
@@ -48,7 +41,7 @@ export function isAsyncFunction(
  * ```
  */
 export function isTatakuModule(x: Record<string, unknown>): x is TatakuModule {
-  return "run" in x && (isFunction(x.run) || isAsyncFunction(x.run));
+  return isFunction(x.run) || isAsyncFunction(x.run);
 }
 
 /**
@@ -66,12 +59,10 @@ export function isTatakuModule(x: Record<string, unknown>): x is TatakuModule {
  * ```
  */
 export function isRecipe(x: Record<string, unknown>): x is Recipe {
-  const acceptCollector = "collector" in x && isObject(x.collector) &&
-    isRecipePage(x.collector);
-  const acceptProcessor = "processor" in x && isArray(x.processor, isObject) &&
-    x.processor.every((p) => isRecipePage(p));
-  const acceptEmitter = "emitter" in x && isObject(x.emitter) &&
-    isRecipePage(x.emitter);
+  const acceptCollector = isObject(x.collector) && isRecipePage(x.collector);
+  const acceptProcessor = isArray(x.processor) &&
+    x.processor.every((p) => isObject(p) && isRecipePage(p));
+  const acceptEmitter = isObject(x.emitter) && isRecipePage(x.emitter);
   return acceptCollector && acceptProcessor && acceptEmitter;
 }
 
@@ -86,8 +77,8 @@ export function isRecipe(x: Record<string, unknown>): x is Recipe {
  * ```
  */
 export function isRecipePage(x: Record<string, unknown>): x is RecipePage {
-  const acceptName = "name" in x && isString(x.name);
-  const acceptOptions = "options" in x && isObject(x.options);
+  const acceptName = isString(x.name);
+  const acceptOptions = isObject(x.options);
   return acceptName && acceptOptions;
 }
 
@@ -101,9 +92,12 @@ export function isRecipePage(x: Record<string, unknown>): x is RecipePage {
  * ```
  */
 export async function echoError(denops: Denops, msg: string): Promise<void> {
-  await echoerr(denops, `[tataku] ${msg}`);
+  await denops.call("tataku#util#echo_error", msg);
 }
 
+/**
+ * handle error in tataku module
+ */
 export async function handleError(
   denops: Denops,
   kind: Kind,
