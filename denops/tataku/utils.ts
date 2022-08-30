@@ -58,7 +58,10 @@ export function isTatakuModule(x: Record<string, unknown>): x is TatakuModule {
  * // true
  * ```
  */
-export function isRecipe(x: Record<string, unknown>): x is Recipe {
+export function isRecipe(x: unknown): x is Recipe {
+  if (!isObject(x)) {
+    return false;
+  }
   const acceptCollector = isObject(x.collector) && isRecipePage(x.collector);
   const acceptProcessor = isArray(x.processor) &&
     x.processor.every((p) => isObject(p) && isRecipePage(p));

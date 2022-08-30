@@ -4,9 +4,11 @@
 CONTENTS						*tataku-contents*
 
 Introduction						|tataku-introduction|
+Dependencies						|tataku-dependencies|
 Terms							|tataku-terms|
 Functions						|tataku-functions|
 Variables						|tataku-variables|
+Operators						|tataku-operators|
 For developer						|tataku-for-developer|
 
 ==============================================================================
@@ -16,6 +18,14 @@ INTRODUCTION						*tataku-introduction*
 processor-emitter.
 
 This plugin make easily to create plugin like call web API.
+
+==============================================================================
+DEPENDENCIES                                               *tataku-dependencies*
+
+This plugin depends below:
+
+* [vim-denops/denops.vim](https://github.com/vim-denops/denops.vim)
+* (Optional) [kana/vim-operator-user](https://github.com/kana/vim-operator-user)
 
 ==============================================================================
 TERMS							*tataku-terms*
@@ -63,6 +73,28 @@ VARIABLES						*tataku-variables*
 
 |g:tataku_recipes|					*g:tataku_recipes*
 	The recipe book.
+	Default: `{}`
+
+|g:tataku_enable_operators|			 *g:tataku_enable_operators*
+	Enable operator mappings starts with `<Plug>(operator-tataku-`.
+	Default: `v:false`
+
+==============================================================================
+OPERATORS						*tataku-operators*
+
+If set `v:true` to `g:tataku_enable_operators`, The operator mappings will
+be enable.
+
+The mappings starts with `<Plug>(operator-tataku-`.
+
+If you registered `foo` and `bar` into `g:tataku_recipes`,
+`<Plug>(operator-tataku-foo)` and `<Plug>(operator-tataku-bar)` will be
+enabled.
+
+NOTE: If call recipe via operator, `collector` module is ignored and use
+motion/textobj instead of its.
+
+NOTE: If use this feature, you must install [kana/vim-operator-user].
 
 ==============================================================================
 FOR DEVELOPER						*tataku-for-developer*
