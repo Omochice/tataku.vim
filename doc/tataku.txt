@@ -1,0 +1,106 @@
+*tataku.vim*	The plugin that define protocol
+
+
+CONTENTS						*tataku-contents*
+
+Introduction						|tataku-introduction|
+Terms							|tataku-terms|
+Functions						|tataku-functions|
+Variables						|tataku-variables|
+For developer						|tataku-for-developer|
+
+==============================================================================
+INTRODUCTION						*tataku-introduction*
+
+|tataku.vim| define protocol between collector-processor, processor-processor,
+processor-emitter.
+
+This plugin make easily to create plugin like call web API.
+
+==============================================================================
+TERMS							*tataku-terms*
+
+|tataku.vim| has some recipes define by user.
+
+Recipe must have three parts.
+
+* Collector					*tataku-term-collector*
+	"Collector" collect strings from some resources.
+* Processor					*tataku-term-processor*
+	"Processor" process strings and pass strings to next processor.
+* Emitter					*tataku-term-emitter*
+	"Emitter" output strings to some resources.
+
+Recipe must be the format:
+
+>>>
+{
+\       "collector": { "name": string, "options": dict, },
+\       "processor": [ { "name": string, "options": dict, } ],
+\       "emitter":   { "name": string, "options": dict },
+\ }
+<<<
+
+"Collector" and "Emitter" can be specified only one module.
+But "Processor" can be specified multiply.
+
+Each module have two keys.
+
+* name
+	The module name.
+	If you use `tataku-collector-current_line`, specify `current_line`.
+* options
+	The options for the module.
+
+==============================================================================
+FUNCTIONS						*tataku-functions*
+
+`tataku#call_recipe(recipe_name)`			*tataku#call_recipe*
+	Call recipe which registered in |g:tataku_recipes|.
+
+==============================================================================
+VARIABLES						*tataku-variables*
+
+|g:tataku_recipes|					*g:tataku_recipes*
+	The recipe book.
+
+==============================================================================
+FOR DEVELOPER						*tataku-for-developer*
+
+This section explain how to create module.
+
+When call recipe, tataku.vim import `@tataku/<module-type>/<module-name>.ts`
+from &runtimepath.
+
+The module must export async function `run()`.
+
+* collector
+	Collector give two arguments.
+	* `denops: Denops`
+		denops.vim handler.
+	* `options: Record<string, unknown>`
+		options specified by user.
+	Collector must return `Promise<string[]>`
+
+* processor
+	Processor give three arguments.
+	* `denops: Denops`
+		denops.vim handler.
+	* `options: Record<string, unknown>`
+		options specified by user.
+	* `source: string[]`
+		processed array of string.
+	Processor must return `Promise<string[]>`
+
+* emitter
+	Emitter give three arguments.
+	* `denops: Denops`
+		denops.vim handler.
+	* `options: Record<string, unknown>`
+		options specified by user.
+	* `source: string[]`
+		processed array of string.
+	Emitter must return `Promise<void>`
+
+==============================================================================
+vim:tw=78:ts=8:ft=help:norl:noet:fen:fdl=0:
