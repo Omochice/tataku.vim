@@ -1,6 +1,6 @@
 import { Denops, ensureArray, fn, isString, op, toFileUrl } from "./deps.ts";
 import { isTatakuModule } from "./utils.ts";
-import { Query, TatakuModule } from "./types.ts";
+import { Collector, Emitter, Processor, Query, TatakuModule } from "./types.ts";
 
 export async function loadTatakuModule(
   denops: Denops,
@@ -40,4 +40,68 @@ export async function loadTatakuModule(
     return [null, e];
   }
   return [loaded, null];
+}
+
+export async function collect(
+  denops: Denops,
+  name: string,
+  options: Record<string, unknown>,
+): Promise<string[]> {
+  const [collector, err] = await loadTatakuModule(denops, {
+    kind: "collector",
+    name: name,
+  });
+
+  if (err !== null) {
+    throw err;
+  }
+
+  try {
+    return await (collector.run as Collector)(denops, options);
+  } catch (e) {
+    throw e;
+  }
+}
+
+export async function process(
+  denops: Denops,
+  name: string,
+  options: Record<string, unknown>,
+  source: string[],
+): Promise<string[]> {
+  const [processor, err] = await loadTatakuModule(denops, {
+    kind: "processor",
+    name: name,
+  });
+  if (err !== null) {
+    throw err;
+  }
+
+  try {
+    return (processor.run as Processor)(denops, options, source);
+  } catch (e) {
+    throw e;
+  }
+}
+
+export async function emit(
+  denops: Denops,
+  name: string,
+  options: Record<string, unknown>,
+  source: string[],
+): Promise<void | Error> {
+  const [emitter, err] = await loadTatakuModule(denops, {
+    kind: "emitter",
+    name: name,
+  });
+
+  if (err !== null) {
+    throw err;
+  }
+
+  try {
+    await (emitter.run as Emitter)(denops, options, source);
+  } catch (e) {
+    return e;
+  }
 }

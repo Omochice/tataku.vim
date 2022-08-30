@@ -1,7 +1,6 @@
 import { Denops, ensureObject } from "./deps.ts";
-import { Collector, Emitter, Processor } from "./types.ts";
 import { echoError, handleError, isRecipe } from "./utils.ts";
-import { loadTatakuModule } from "./tataku.ts";
+import { collect, emit, process } from "./tataku.ts";
 
 export async function main(denops: Denops): Promise<void> {
   denops.dispatcher = {
@@ -13,87 +12,30 @@ export async function main(denops: Denops): Promise<void> {
         return;
       }
 
-      let results: string[] = [];
+      const { collector, processor, emitter } = ensuredRecipe;
+      let pipe: string[] = [];
 
-      // collector
-      {
-        const [collector, err] = await loadTatakuModule(denops, {
-          kind: "collector",
-          name: ensuredRecipe.collector.name,
-        });
+      try {
+        pipe = await collect(denops, collector.name, collector.options);
+      } catch (err) {
+        await handleError(denops, "collector", collector.name, err);
+        return;
+      }
 
-        if (err !== null) {
-          await echoError(denops, err.message);
-          return;
-        }
-
+      for (const recipe of processor) {
         try {
-          results = await (collector.run as Collector)(
-            denops,
-            ensuredRecipe.collector.options,
-          );
-        } catch (e) {
-          await handleError(
-            denops,
-            "collector",
-            ensuredRecipe.collector.name,
-            e,
-          );
+          pipe = await process(denops, recipe.name, recipe.options, pipe);
+        } catch (err) {
+          await handleError(denops, "processor", recipe.name, err);
           return;
         }
       }
 
-      for (const recipe of ensuredRecipe.processor) {
-        const [processor, err] = await loadTatakuModule(denops, {
-          kind: "processor",
-          name: recipe.name,
-        });
-        if (err !== null) {
-          await echoError(denops, err.message);
-          return;
-        }
-        try {
-          results = await (processor.run as Processor)(
-            denops,
-            recipe.options,
-            results,
-          );
-        } catch (e) {
-          await handleError(
-            denops,
-            "processor",
-            recipe.name,
-            e,
-          );
-          return;
-        }
-      }
-
-      // emitter
-      {
-        const [emitter, err] = await loadTatakuModule(denops, {
-          kind: "emitter",
-          name: ensuredRecipe.emitter.name,
-        });
-        if (err !== null) {
-          await echoError(denops, err.message);
-          return;
-        }
-        try {
-          await (emitter.run as Emitter)(
-            denops,
-            ensuredRecipe.emitter.options,
-            results,
-          );
-        } catch (e) {
-          await handleError(
-            denops,
-            "emitter",
-            ensuredRecipe.emitter.name,
-            e,
-          );
-          return;
-        }
+      try {
+        await emit(denops, emitter.name, emitter.options, pipe);
+      } catch (err) {
+        await handleError(denops, "emitter", emitter.name, err);
+        return;
       }
     },
   };
