@@ -33,13 +33,13 @@ Recipe must have three parts.
 
 Recipe must be the format:
 
->>>
+>
 {
 \       "collector": { "name": string, "options": dict, },
 \       "processor": [ { "name": string, "options": dict, } ],
 \       "emitter":   { "name": string, "options": dict },
 \ }
-<<<
+<
 
 "Collector" and "Emitter" can be specified only one module.
 But "Processor" can be specified multiply.
