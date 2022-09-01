@@ -40,8 +40,8 @@ export function isAsyncFunction(
  * // false
  * ```
  */
-export function isTatakuModule(x: Record<string, unknown>): x is TatakuModule {
-  return isFunction(x.run) || isAsyncFunction(x.run);
+export function isTatakuModule(x: unknown): x is TatakuModule {
+  return isObject(x) && (isFunction(x.run) || isAsyncFunction(x.run));
 }
 
 /**
