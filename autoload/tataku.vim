@@ -2,7 +2,7 @@ let s:save_cpo = &cpo
 set cpo&vim
 
 function! tataku#call_recipe(recipe_name) abort
-  let l:recipe = s:get_recipe(recipe_name)
+  let l:recipe = s:get_recipe(a:recipe_name)
   if empty(l:recipe)
     return
   endif
