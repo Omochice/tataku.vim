@@ -76,3 +76,38 @@ Deno.test({
     );
   },
 });
+
+Deno.test({
+  name: "Test for `isRecipe`",
+  fn: async (t) => {
+    await t.step("If x is expected format, should return true", () => {
+      const x = {
+        collector: { name: "sample", options: {} },
+        processor: [{ name: "sample", options: {} }],
+        emitter: { name: "sample", options: {} },
+      };
+      assert(isRecipe(x), `Given: ${x}`);
+    });
+    await t.step("If `collector` is missing in x, should return false", () => {
+      const x = {
+        processor: [{ name: "sample", options: {} }],
+        emitter: { name: "sample", options: {} },
+      };
+      assert(!isRecipe(x), `Given: ${x}`);
+    });
+    await t.step("If `processor` is missing in x, should return false", () => {
+      const x = {
+        collector: { name: "sample", options: {} },
+        emitter: { name: "sample", options: {} },
+      };
+      assert(!isRecipe(x), `Given: ${x}`);
+    });
+    await t.step("If `emitter` is missing in x, should return false", () => {
+      const x = {
+        collector: { name: "sample", options: {} },
+        processor: [{ name: "sample", options: {} }],
+      };
+      assert(!isRecipe(x), `Given: ${x}`);
+    });
+  },
+});
