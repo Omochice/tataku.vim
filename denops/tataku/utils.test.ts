@@ -1,5 +1,10 @@
 import { assert } from "https://deno.land/std@0.145.0/testing/asserts.ts";
-import { isAsyncFunction, isRecipe, isTatakuModule } from "././utils.ts";
+import {
+  isAsyncFunction,
+  isRecipe,
+  isRecipePage,
+  isTatakuModule,
+} from "././utils.ts";
 
 Deno.test({
   name: "Test for `isAsyncFunction`.",
@@ -108,6 +113,43 @@ Deno.test({
         processor: [{ name: "sample", options: {} }],
       };
       assert(!isRecipe(x), `Given: ${x}`);
+    });
+  },
+});
+
+Deno.test({
+  name: "Test for `isRecipePage`",
+  fn: async (t) => {
+    await t.step("If x is expected format, should return true", () => {
+      const x = { name: "", options: {} };
+      assert(isRecipePage(x), `Given: ${x}`);
+    });
+    await t.step("Even if x has other prop too, should return true", () => {
+      const x = { name: "", options: {}, other: "" };
+      assert(isRecipePage(x), `Given: ${x}`);
+    });
+    await t.step("If `name` has value not string, should return false", () => {
+      for (const prop of [Number(), Array(0), Object(), Function()]) {
+        const x = { name: prop, options: {} };
+        assert(!isRecipePage(x), `Given: ${x}`);
+      }
+    });
+    await t.step(
+      "If `options` has value not object, should return false",
+      () => {
+        for (const prop of [Number(), String(), Array(0), Function()]) {
+          const x = { name: "", options: prop };
+          assert(!isRecipePage(x), `Given: ${x}`);
+        }
+      },
+    );
+    await t.step("If x does not have `name`, should return false", () => {
+      const x = { options: {} };
+      assert(!isRecipePage(x), `Given: ${x}`);
+    });
+    await t.step("If x does not have `options`, should return false", () => {
+      const x = { name: "" };
+      assert(!isRecipePage(x), `Given: ${x}`);
     });
   },
 });
