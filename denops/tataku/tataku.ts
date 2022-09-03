@@ -2,11 +2,13 @@ import { Denops, ensureArray, fn, isString, op, toFileUrl } from "./deps.ts";
 import { isTatakuModule } from "./utils.ts";
 import { Collector, Emitter, Processor, Query, TatakuModule } from "./types.ts";
 
-export async function loadTatakuModule(
+export async function loadTatakuModule<
+  T extends Collector | Processor | Emitter,
+>(
   denops: Denops,
   query: Query,
 ): Promise<
-  [TatakuModule, null] | [null, Error]
+  [TatakuModule<T>, null] | [null, Error]
 > {
   const expectedPath = `@tataku/${query.kind}/${query.name}.ts`;
   const founds = ensureArray(
@@ -32,7 +34,7 @@ export async function loadTatakuModule(
 
   const loaded = await import(toFileUrl(founds[0]).href);
 
-  if (!isTatakuModule(loaded)) {
+  if (!isTatakuModule<T>(loaded)) {
     // module should have "run" property
     const e = new Error(
       `Module of ${expectedPath} must have "run" function.`,
@@ -47,7 +49,7 @@ export async function collect(
   name: string,
   options: Record<string, unknown>,
 ): Promise<string[]> {
-  const [collector, err] = await loadTatakuModule(denops, {
+  const [collector, err] = await loadTatakuModule<Collector>(denops, {
     kind: "collector",
     name: name,
   });
@@ -57,7 +59,7 @@ export async function collect(
   }
 
   try {
-    return await (collector.run as Collector)(denops, options);
+    return await collector.run(denops, options);
   } catch (e) {
     throw e;
   }
@@ -69,7 +71,7 @@ export async function process(
   options: Record<string, unknown>,
   source: string[],
 ): Promise<string[]> {
-  const [processor, err] = await loadTatakuModule(denops, {
+  const [processor, err] = await loadTatakuModule<Processor>(denops, {
     kind: "processor",
     name: name,
   });
@@ -78,7 +80,7 @@ export async function process(
   }
 
   try {
-    return (processor.run as Processor)(denops, options, source);
+    return processor.run(denops, options, source);
   } catch (e) {
     throw e;
   }
@@ -90,7 +92,7 @@ export async function emit(
   options: Record<string, unknown>,
   source: string[],
 ): Promise<void | Error> {
-  const [emitter, err] = await loadTatakuModule(denops, {
+  const [emitter, err] = await loadTatakuModule<Emitter>(denops, {
     kind: "emitter",
     name: name,
   });
@@ -100,7 +102,7 @@ export async function emit(
   }
 
   try {
-    await (emitter.run as Emitter)(denops, options, source);
+    await emitter.run(denops, options, source);
   } catch (e) {
     return e;
   }

@@ -1,5 +1,13 @@
 import { Denops, isArray, isFunction, isObject, isString } from "./deps.ts";
-import { Kind, Recipe, RecipePage, TatakuModule } from "./types.ts";
+import {
+  Collector,
+  Emitter,
+  Kind,
+  Processor,
+  Recipe,
+  RecipePage,
+  TatakuModule,
+} from "./types.ts";
 
 /**
  * Return `true` if the type of `x` is `async function`.
@@ -40,7 +48,9 @@ export function isAsyncFunction(
  * // false
  * ```
  */
-export function isTatakuModule(x: unknown): x is TatakuModule {
+export function isTatakuModule<T extends Collector | Processor | Emitter>(
+  x: unknown,
+): x is TatakuModule<T> {
   return isObject(x) && (isFunction(x.run) || isAsyncFunction(x.run));
 }
 

@@ -18,8 +18,8 @@ export type Query = {
   name: string;
 };
 
-export type TatakuModule = {
-  run: Collector | Processor | Emitter;
+export type TatakuModule<T extends Collector | Processor | Emitter> = {
+  run: T;
 };
 
 export type Collector = (
