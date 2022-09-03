@@ -8,7 +8,7 @@ Dependencies						|tataku-dependencies|
 Terms							|tataku-terms|
 Functions						|tataku-functions|
 Variables						|tataku-variables|
-Operators						|tataku-operators|
+Operator						|tataku-operator|
 For developer						|tataku-for-developer|
 
 ==============================================================================
@@ -75,14 +75,14 @@ VARIABLES						*tataku-variables*
 	The recipe book.
 	Default: `{}`
 
-|g:tataku_enable_operators|			 *g:tataku_enable_operators*
+|g:tataku_enable_operator|			 *g:tataku_enable_operator*
 	Enable operator mappings starts with `<Plug>(operator-tataku-`.
 	Default: `v:false`
 
 ==============================================================================
-OPERATORS						*tataku-operators*
+OPERATOR						*tataku-operator*
 
-If set `v:true` to `g:tataku_enable_operators`, The operator mappings will
+If set `v:true` to `g:tataku_enable_operator`, The operator mappings will
 be enable.
 
 The mappings starts with `<Plug>(operator-tataku-`.

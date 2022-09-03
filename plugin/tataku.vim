@@ -6,7 +6,7 @@ let g:loaded_tataku = v:true
 let s:save_cpo = &cpo
 set cpo&vim
 
-if get(g:, 'tataku_enable_operators', v:false)
+if get(g:, 'tataku_enable_operator', v:false)
   for recipe in keys(get(g:, 'tataku_recipes', {}))
     call operator#user#define(
           \ 'tataku-' .. recipe,
