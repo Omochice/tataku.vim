@@ -20,12 +20,13 @@ processor-emitter.
 This plugin make easily to create plugin like call web API.
 
 ==============================================================================
-DEPENDENCIES                                               *tataku-dependencies*
+DEPENDENCIES						*tataku-dependencies*
 
 This plugin depends below:
 
 * [vim-denops/denops.vim](https://github.com/vim-denops/denops.vim)
-* (Optional) [kana/vim-operator-user](https://github.com/kana/vim-operator-user)
+* [kana/vim-operator-user](https://github.com/kana/vim-operator-user)
+	* Optional
 
 ==============================================================================
 TERMS							*tataku-terms*
@@ -41,13 +42,13 @@ Recipe must have three parts.
 * Emitter					*tataku-term-emitter*
 	"Emitter" output strings to some resources.
 
-Recipe must be the format:
+Recipe must be below format:
 
 >
 {
 \       "collector": { "name": string, "options": dict, },
 \       "processor": [ { "name": string, "options": dict, } ],
-\       "emitter":   { "name": string, "options": dict },
+\       "emitter":   { "name": string, "options": dict, },
 \ }
 <
 
