@@ -8,11 +8,14 @@ set cpo&vim
 
 if get(g:, 'tataku_enable_operator', v:false)
   for recipe in keys(get(g:, 'tataku_recipes', {}))
-    call operator#user#define(
-          \ 'tataku-' .. recipe,
-          \ 'tataku#_call_as_operator',
-          \ printf('call tataku#_setup_operator("%s")', recipe)
-          \ )
+    for mode in ['n', 'v']
+      execute printf(
+            \ '%snoremap <expr> <Plug>(operator-tataku-%s) tataku#_setup_operator("%s")()',
+            \ mode,
+            \ recipe,
+            \ recipe,
+            \ )
+    endfor
   endfor
 endif
 

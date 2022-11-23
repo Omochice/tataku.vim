@@ -10,18 +10,36 @@ function! tataku#call_recipe(recipe_name) abort
   call denops#notify('tataku', 'run', [l:recipe])
 endfunction
 
+" operator{{{
 let s:recipe_name = ''
 function! tataku#_setup_operator(recipe_name) abort
   let s:recipe_name = a:recipe_name
+  return function('tataku#_operator')
 endfunction
 
-function! tataku#_call_as_operator(motion_type) abort
-  if s:is_invalid_region()
-    return
+function! s:visual_command_from_wise_name(wise_name) abort
+  " this from kana/vim-operator-user
+  if a:wise_name ==# 'char'
+    return 'v'
+  elseif a:wise_name ==# 'line'
+    return 'V'
+  elseif a:wise_name ==# 'block'
+    return "\<C-v>"
+  endif
+  call tataku#util#echo_error(
+        \ printf(':Internal error: Invalid wise: %s', string(a:wise_name))
+        \ )
+  return 'v'  " fallback
+endfunction
+
+function! tataku#_operator(...) abort
+  if a:0 == 0
+    let &operatorfunc = 'tataku#_operator'
+    return 'g@'
   endif
 
   let l:tmp = @@
-  let l:v = operator#user#visual_command_from_wise_name(a:motion_type)
+  let l:v = s:visual_command_from_wise_name(a:000[0])
   execute 'silent!' 'normal!' '`[' .. v .. '`]"@y'
   let l:selected = split(@@, '\n')
   let @@ = l:tmp
@@ -33,7 +51,7 @@ function! tataku#_call_as_operator(motion_type) abort
   call denops#plugin#wait('tataku')
   call denops#notify('tataku', 'runWithoutCollector', [l:recipe, l:selected])
 endfunction
-
+" }}}
 
 function! s:get_recipe(recipe_name) abort
   try
@@ -43,10 +61,6 @@ function! s:get_recipe(recipe_name) abort
     call tataku#util#echo_error(printf('"%s" does not exist in g:tataku_recipes.', a:recipe_name))
     return {}
   endtry
-endfunction
-
-function! s:is_invalid_region() abort
-  return line("'[") ==# line("']") + 1
 endfunction
 
 let &cpo = s:save_cpo
