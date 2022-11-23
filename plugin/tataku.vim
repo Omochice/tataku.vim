@@ -10,7 +10,7 @@ if get(g:, 'tataku_enable_operator', v:false)
   for recipe in keys(get(g:, 'tataku_recipes', {}))
     for mode in ['n', 'v']
       execute printf(
-            \ '%snoremap <expr> <Plug>(operator-tataku-%s) tataku#_setup_operator("%s")()',
+            \ '%snoremap <expr> <Plug>(operator-tataku-%s) tataku#_operator("%s")()',
             \ mode,
             \ recipe,
             \ recipe,

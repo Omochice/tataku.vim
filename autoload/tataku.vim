@@ -11,10 +11,30 @@ function! tataku#call_recipe(recipe_name) abort
 endfunction
 
 " operator{{{
-let s:recipe_name = ''
-function! tataku#_setup_operator(recipe_name) abort
+function! tataku#_operator(recipe_name) abort
   let s:recipe_name = a:recipe_name
-  return function('tataku#_operator')
+
+  function! s:operator(...) abort
+    if a:0 == 0
+      let &operatorfunc = function('s:operator')
+      return 'g@'
+    endif
+
+    let l:tmp = @@
+    let l:v = s:visual_command_from_wise_name(a:000[0])
+    execute 'silent!' 'normal!' '`[' .. v .. '`]"@y'
+    let l:selected = split(@@, '\n')
+    let @@ = l:tmp
+
+    let l:recipe = s:get_recipe(s:recipe_name)
+    if empty(l:recipe)
+      return
+    endif
+    call denops#plugin#wait('tataku')
+    call denops#notify('tataku', 'runWithoutCollector', [l:recipe, l:selected])
+  endfunction
+
+  return function('s:operator')
 endfunction
 
 function! s:visual_command_from_wise_name(wise_name) abort
@@ -32,25 +52,6 @@ function! s:visual_command_from_wise_name(wise_name) abort
   return 'v'  " fallback
 endfunction
 
-function! tataku#_operator(...) abort
-  if a:0 == 0
-    let &operatorfunc = 'tataku#_operator'
-    return 'g@'
-  endif
-
-  let l:tmp = @@
-  let l:v = s:visual_command_from_wise_name(a:000[0])
-  execute 'silent!' 'normal!' '`[' .. v .. '`]"@y'
-  let l:selected = split(@@, '\n')
-  let @@ = l:tmp
-
-  let l:recipe = s:get_recipe(s:recipe_name)
-  if empty(l:recipe)
-    return
-  endif
-  call denops#plugin#wait('tataku')
-  call denops#notify('tataku', 'runWithoutCollector', [l:recipe, l:selected])
-endfunction
 " }}}
 
 function! s:get_recipe(recipe_name) abort
