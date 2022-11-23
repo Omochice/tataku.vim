@@ -25,8 +25,6 @@ DEPENDENCIES						*tataku-dependencies*
 This plugin depends below:
 
 * [vim-denops/denops.vim](https://github.com/vim-denops/denops.vim)
-* [kana/vim-operator-user](https://github.com/kana/vim-operator-user)
-	* Optional
 
 ==============================================================================
 TERMS							*tataku-terms*
@@ -94,8 +92,6 @@ enabled.
 
 NOTE: If call recipe via operator, `collector` module is ignored and use
 motion/textobj instead of its.
-
-NOTE: If use this feature, you must install [kana/vim-operator-user].
 
 ==============================================================================
 FOR DEVELOPER						*tataku-for-developer*
