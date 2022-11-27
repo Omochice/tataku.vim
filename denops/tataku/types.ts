@@ -24,17 +24,17 @@ export type TatakuModule<T extends Collector | Processor | Emitter> = {
 
 export type Collector = (
   denops: Denops,
-  options: Record<string, unknown>,
+  options?: Record<string, unknown>,
 ) => Promise<string[]>;
 
 export type Processor = (
   denops: Denops,
-  options: Record<string, unknown>,
   source: string[],
+  options?: Record<string, unknown>,
 ) => Promise<string[]>;
 
 export type Emitter = (
   denops: Denops,
-  options: Record<string, unknown>,
   source: string[],
+  options?: Record<string, unknown>,
 ) => Promise<void>;

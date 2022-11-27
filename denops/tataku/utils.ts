@@ -1,4 +1,11 @@
-import { Denops, isArray, isFunction, isObject, isString } from "./deps.ts";
+import {
+  Denops,
+  isArray,
+  isFunction,
+  isObject,
+  isString,
+  isUndefined,
+} from "./deps.ts";
 import {
   Collector,
   Emitter,
@@ -84,14 +91,17 @@ export function isRecipe(x: unknown): x is Recipe {
  *
  * @example
  * ```typescript
- * const r = { name: "sample", options: {}, }
+ * const r = { name: "sample", options: { name: 42 }, }
+ * isRecipePage(r)
+ * // true
+ * const r = { name: "sample", }
  * isRecipePage(r)
  * // true
  * ```
  */
 export function isRecipePage(x: Record<string, unknown>): x is RecipePage {
   const acceptName = isString(x.name);
-  const acceptOptions = isObject(x.options);
+  const acceptOptions = isUndefined(x.options) || isObject(x.options);
   return acceptName && acceptOptions;
 }
 

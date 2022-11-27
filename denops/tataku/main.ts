@@ -14,7 +14,7 @@ export async function main(denops: Denops): Promise<void> {
       let pipe: string[] = [];
 
       try {
-        pipe = await collect(denops, collector.name, collector.options);
+        pipe = await collect(denops, collector.name, collector.options ?? {});
       } catch (err) {
         await handleError(denops, "collector", collector.name, err);
         return;
@@ -22,7 +22,7 @@ export async function main(denops: Denops): Promise<void> {
 
       for (const recipe of processor) {
         try {
-          pipe = await process(denops, recipe.name, recipe.options, pipe);
+          pipe = await process(denops, recipe.name, recipe.options ?? {}, pipe);
         } catch (err) {
           await handleError(denops, "processor", recipe.name, err);
           return;
@@ -30,7 +30,7 @@ export async function main(denops: Denops): Promise<void> {
       }
 
       try {
-        await emit(denops, emitter.name, emitter.options, pipe);
+        await emit(denops, emitter.name, emitter.options ?? {}, pipe);
       } catch (err) {
         await handleError(denops, "emitter", emitter.name, err);
         return;
