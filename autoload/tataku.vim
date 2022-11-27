@@ -15,7 +15,7 @@ function! tataku#_operator(recipe_name) abort
   let s:recipe_name = a:recipe_name
 
   function! s:operator(...) abort
-    if a:0 == 0
+    if a:0 ==# 0
       let &operatorfunc = function('s:operator')
       return 'g@'
     endif
