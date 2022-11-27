@@ -6,15 +6,8 @@ import {
   isString,
   isUndefined,
 } from "./deps.ts";
-import {
-  Collector,
-  Emitter,
-  Kind,
-  Processor,
-  Recipe,
-  RecipePage,
-  TatakuModule,
-} from "./types.ts";
+import { Kind, Recipe, RecipePage } from "./types.ts";
+import { Collector, Emitter, Processor } from "./interface.ts";
 
 /**
  * Return `true` if the type of `x` is `async function`.
@@ -57,7 +50,7 @@ export function isAsyncFunction(
  */
 export function isTatakuModule<T extends Collector | Processor | Emitter>(
   x: unknown,
-): x is TatakuModule<T> {
+): x is T {
   return isObject(x) && (isFunction(x.run) || isAsyncFunction(x.run));
 }
 

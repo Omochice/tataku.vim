@@ -1,16 +1,21 @@
 import { Denops } from "./deps.ts";
 
 export interface Collector {
-  run: (denops: Denops) => string[];
-  option: Record<string, unknown>;
+  run: (
+    denops: Denops,
+  ) => Promise<string[]>;
 }
 
 export interface Processor {
-  run: (denops: Denops, source: string[]) => string[];
-  option: Record<string, unknown>;
+  run: (
+    denops: Denops,
+    source: string[],
+  ) => Promise<string[]>;
 }
 
 export interface Emitter {
-  run: (denops: Denops, source: string[]) => void;
-  option: Record<string, unknown>;
+  run: (
+    denops: Denops,
+    source: string[],
+  ) => Promise<void>;
 }

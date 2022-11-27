@@ -1,16 +1,18 @@
 import { Denops, ensureArray, fn, isString, op, toFileUrl } from "./deps.ts";
 import { isTatakuModule } from "./utils.ts";
-import { Collector, Emitter, Processor, Query, TatakuModule } from "./types.ts";
+import { Query } from "./types.ts";
+import { Collector, Emitter, Processor } from "./interface.ts";
 
 export async function loadTatakuModule<
   T extends Collector | Processor | Emitter,
 >(
   denops: Denops,
   query: Query,
+  option: Record<string, unknown>,
 ): Promise<
-  [TatakuModule<T>, null] | [null, Error]
+  [T, undefined] | [undefined, Error]
 > {
-  const expectedPath = `@tataku/${query.kind}/${query.name}.ts`;
+  const expectedPath = `denops/@tataku/${query.kind}/${query.name}.ts`;
   const founds = ensureArray(
     await fn.globpath(
       denops,
@@ -24,42 +26,48 @@ export async function loadTatakuModule<
 
   if (founds.length === 0) {
     const e = new Error(`${expectedPath} is not included in &runtimepath.`);
-    return [null, e];
+    return [undefined, e];
   }
   if (founds.length > 1) {
     // module should have uniq name
     const e = new Error(`${expectedPath} found duplicatedly: ${founds}`);
-    return [null, e];
+    return [undefined, e];
   }
 
-  const loaded = await import(toFileUrl(founds[0]).href);
+  const { default: loaded } = await import(toFileUrl(founds[0]).href);
 
-  if (!isTatakuModule<T>(loaded)) {
+  const constructed = new loaded(option);
+
+  if (!isTatakuModule<T>(constructed)) {
     // module should have "run" property
     const e = new Error(
       `Module of ${expectedPath} must have "run" function.`,
     );
-    return [null, e];
+    return [undefined, e];
   }
-  return [loaded, null];
+  return [constructed, undefined];
 }
 
 export async function collect(
   denops: Denops,
   name: string,
-  options: Record<string, unknown>,
+  option: Record<string, unknown>,
 ): Promise<string[]> {
-  const [collector, err] = await loadTatakuModule<Collector>(denops, {
-    kind: "collector",
-    name: name,
-  });
+  const [collector, err] = await loadTatakuModule<Collector>(
+    denops,
+    {
+      kind: "collector",
+      name: name,
+    },
+    option,
+  );
 
-  if (err !== null) {
+  if (err !== undefined) {
     throw err;
   }
 
   try {
-    return await collector.run(denops, options);
+    return await collector.run(denops);
   } catch (e) {
     throw e;
   }
@@ -68,19 +76,23 @@ export async function collect(
 export async function process(
   denops: Denops,
   name: string,
-  options: Record<string, unknown>,
+  option: Record<string, unknown>,
   source: string[],
 ): Promise<string[]> {
-  const [processor, err] = await loadTatakuModule<Processor>(denops, {
-    kind: "processor",
-    name: name,
-  });
-  if (err !== null) {
+  const [processor, err] = await loadTatakuModule<Processor>(
+    denops,
+    {
+      kind: "processor",
+      name: name,
+    },
+    option,
+  );
+  if (err !== undefined) {
     throw err;
   }
 
   try {
-    return processor.run(denops, options, source);
+    return processor.run(denops, source);
   } catch (e) {
     throw e;
   }
@@ -89,20 +101,24 @@ export async function process(
 export async function emit(
   denops: Denops,
   name: string,
-  options: Record<string, unknown>,
+  option: Record<string, unknown>,
   source: string[],
 ): Promise<void | Error> {
-  const [emitter, err] = await loadTatakuModule<Emitter>(denops, {
-    kind: "emitter",
-    name: name,
-  });
+  const [emitter, err] = await loadTatakuModule<Emitter>(
+    denops,
+    {
+      kind: "emitter",
+      name: name,
+    },
+    option,
+  );
 
-  if (err !== null) {
+  if (err !== undefined) {
     throw err;
   }
 
   try {
-    await emitter.run(denops, options, source);
+    await emitter.run(denops, source);
   } catch (e) {
     return e;
   }
