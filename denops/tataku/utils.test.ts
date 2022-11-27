@@ -147,9 +147,9 @@ Deno.test({
       const x = { options: {} };
       assert(!isRecipePage(x), `Given: ${x}`);
     });
-    await t.step("If x does not have `options`, should return false", () => {
+    await t.step("If x does not have `options`, should return true", () => {
       const x = { name: "" };
-      assert(!isRecipePage(x), `Given: ${x}`);
+      assert(isRecipePage(x), `Given: ${x}`);
     });
   },
 });
