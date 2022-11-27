@@ -8,7 +8,7 @@ set cpo&vim
 
 if get(g:, 'tataku_enable_operator', v:false)
   for recipe in keys(get(g:, 'tataku_recipes', {}))
-    for mode in ['n', 'v']
+    for mode in ['n', 'x']
       execute printf(
             \ '%snoremap <expr> <Plug>(operator-tataku-%s) tataku#_operator("%s")()',
             \ mode,
