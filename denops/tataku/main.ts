@@ -10,29 +10,46 @@ export async function main(denops: Denops): Promise<void> {
         return;
       }
 
-      const { collector, processor, emitter } = recipe;
-      let pipe: string[] = [];
+      const { collector, processor: processors, emitter } = recipe;
 
-      try {
-        pipe = await collect(denops, collector.name, collector.options ?? {});
-      } catch (err) {
-        await handleError(denops, "collector", collector.name, err);
+      const collected = await collect(
+        denops,
+        collector.name,
+        collector.options ?? {},
+      );
+      if (collected.isErr()) {
+        await handleError(denops, "collector", collector.name, collected.error);
         return;
       }
 
-      for (const recipe of processor) {
-        try {
-          pipe = await process(denops, recipe.name, recipe.options ?? {}, pipe);
-        } catch (err) {
-          await handleError(denops, "processor", recipe.name, err);
+      let processed = collected.value;
+      for (const processor of processors) {
+        const result = await process(
+          denops,
+          processor.name,
+          processor.options ?? {},
+          processed,
+        );
+        if (result.isErr()) {
+          await handleError(
+            denops,
+            "processor",
+            processor.name,
+            result.error,
+          );
           return;
         }
+        processed = result.value;
       }
 
-      try {
-        await emit(denops, emitter.name, emitter.options ?? {}, pipe);
-      } catch (err) {
-        await handleError(denops, "emitter", emitter.name, err);
+      const result = await emit(
+        denops,
+        emitter.name,
+        emitter.options ?? {},
+        processed,
+      );
+      if (result.isErr()) {
+        await handleError(denops, "emitter", emitter.name, result.error);
         return;
       }
     },
@@ -45,22 +62,36 @@ export async function main(denops: Denops): Promise<void> {
         return;
       }
 
-      const { processor, emitter } = recipe;
-      let pipe: string[] = source;
+      const { processor: processors, emitter } = recipe;
 
-      for (const recipe of processor) {
-        try {
-          pipe = await process(denops, recipe.name, recipe.options ?? {}, pipe);
-        } catch (err) {
-          await handleError(denops, "processor", recipe.name, err);
+      let processed = source
+      for (const processor of processors) {
+        const result = await process(
+          denops,
+          processor.name,
+          processor.options ?? {},
+          processed,
+        );
+        if (result.isErr()) {
+          await handleError(
+            denops,
+            "processor",
+            processor.name,
+            result.error,
+          );
           return;
         }
+        processed = result.value;
       }
 
-      try {
-        await emit(denops, emitter.name, emitter.options ?? {}, pipe);
-      } catch (err) {
-        await handleError(denops, "emitter", emitter.name, err);
+      const result = await emit(
+        denops,
+        emitter.name,
+        emitter.options ?? {},
+        processed,
+      );
+      if (result.isErr()) {
+        await handleError(denops, "emitter", emitter.name, result.error);
         return;
       }
     },
