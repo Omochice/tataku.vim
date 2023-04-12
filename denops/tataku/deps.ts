@@ -13,4 +13,4 @@ export {
 
 export { toFileUrl } from "https://deno.land/std@0.152.0/path/mod.ts";
 
-export { err, ok, Result } from "npm:neverthrow";
+export { err, ok, Result } from "npm:neverthrow@6.0.0";
