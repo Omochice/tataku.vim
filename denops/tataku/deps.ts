@@ -1,6 +1,6 @@
-export type { Denops } from "https://deno.land/x/denops_std@v4.1.4/mod.ts";
-export * as op from "https://deno.land/x/denops_std@v4.1.4/option/mod.ts";
-export * as fn from "https://deno.land/x/denops_std@v4.1.4/function/mod.ts";
+export type { Denops } from "https://deno.land/x/denops_std@v4.1.6/mod.ts";
+export * as op from "https://deno.land/x/denops_std@v4.1.6/option/mod.ts";
+export * as fn from "https://deno.land/x/denops_std@v4.1.6/function/mod.ts";
 export {
   ensureArray,
   ensureObject,
