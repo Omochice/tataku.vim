@@ -9,7 +9,7 @@ export {
   isObject,
   isString,
   isUndefined,
-} from "https://deno.land/x/unknownutil@v2.1.0/mod.ts";
+} from "https://deno.land/x/unknownutil@v2.1.1/mod.ts";
 
 export { toFileUrl } from "https://deno.land/std@0.186.0/path/mod.ts";
 
