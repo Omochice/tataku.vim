@@ -14,3 +14,5 @@ export {
 export { toFileUrl } from "https://deno.land/std@0.189.0/path/mod.ts";
 
 export { err, ok, Result } from "npm:neverthrow@6.0.0";
+
+export { $array, $object, $opt, $string } from "https://esm.sh/lizod@0.2.4";
