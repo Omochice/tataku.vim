@@ -1,131 +1,81 @@
-import { Denops, Err, fn, is, Ok, op, Result, toFileUrl } from "./deps.ts";
-import { isTatakuModule } from "./utils.ts";
-import { Query } from "./types.ts";
-import { Collector, Emitter, Processor } from "./interface.ts";
+import { Denops, Err, Ok, Result } from "./deps.ts";
+import { Recipe, validate } from "./types.ts";
+import { Collector, Emitter, Processor } from "./types.ts";
+import { loadCollector, loadEmitter, loadProcessor } from "./load.ts";
 
-export async function loadTatakuModule<
-  T extends Collector | Processor | Emitter,
->(
+type Streams = {
+  collector: Collector;
+  processors: Processor[];
+  emitter: Emitter;
+};
+
+export function execute(
   denops: Denops,
-  query: Query,
-  option: Record<string, unknown>,
-): Promise<
-  Result<T, Error>
-> {
-  const expectedPath = `denops/@tataku/${query.kind}/${query.name}.ts`;
-  const founds = await fn.globpath(
-    denops,
-    await op.runtimepath.getGlobal(denops),
-    expectedPath,
-    false,
-    true,
-  );
-  if (!is.ArrayOf(is.String)(founds)) {
+  recipe: unknown,
+): Promise<Result<undefined, Error>> {
+  return prepareStreams(denops, recipe)
+    .then((r) =>
+      r.andThen((streams: Streams) => {
+        streams.processors
+          .reduce(
+            (acc: Collector, p: Processor) => acc.pipeThrough(p),
+            streams.collector,
+          )
+          .pipeTo(streams.emitter);
+        return Ok(undefined);
+      })
+    );
+}
+
+async function prepareStreams(
+  denops: Denops,
+  recipe: unknown,
+): Promise<Result<Streams, Error>> {
+  if (!validate(recipe)) {
     return Err(
       new Error(
-        `globpath must be return array of string: ${JSON.stringify(founds)}`,
+        `The recipe is invalid format: ${JSON.stringify(recipe)}`,
       ),
     );
   }
-
-  if (founds.length === 0) {
-    const e = new Error(`${expectedPath} is not included in &runtimepath.`);
-    return Err(e);
+  const loadCollectorResult = await loadCollector(
+    denops,
+    recipe.collector.name,
+  );
+  if (loadCollectorResult.isErr()) {
+    return Err(loadCollectorResult.unwrapErr());
   }
-  if (founds.length > 1) {
-    // module should have uniq name
-    const e = new Error(`${expectedPath} found duplicatedly: ${founds}`);
-    return Err(e);
-  }
+  const collector = loadCollectorResult.unwrap()(
+    denops,
+    recipe.collector.options ?? {},
+  );
 
-  const { default: loaded } = await import(toFileUrl(founds[0]).href);
-
-  const constructed = new loaded(option);
-
-  if (!isTatakuModule<T>(constructed)) {
-    // module should have "run" property
-    const e = new Error(
-      `Module of ${expectedPath} must have "run" function.`,
+  const processors = [];
+  for (const processorRecipe of recipe.processor) {
+    const loadProcessorResult = await loadProcessor(
+      denops,
+      processorRecipe.name,
     );
-    return Err(e);
+    if (loadProcessorResult.isErr()) {
+      return Err(loadCollectorResult.unwrapErr());
+    }
+    processors.push(
+      loadProcessorResult.unwrap()(denops, processorRecipe.options ?? {}),
+    );
   }
-  return Ok(constructed);
-}
 
-export async function collect(
-  denops: Denops,
-  name: string,
-  option: Record<string, unknown>,
-): Promise<Result<string[], unknown>> {
-  const result = await loadTatakuModule<Collector>(
+  const loadEmitterResult = await loadEmitter(denops, recipe.emitter.name);
+  if (loadEmitterResult.isErr()) {
+    return Err(loadEmitterResult.unwrapErr());
+  }
+  const emitter = loadEmitterResult.unwrap()(
     denops,
-    {
-      kind: "collector",
-      name: name,
-    },
-    option,
+    recipe.emitter.options ?? {},
   );
 
-  if (result.isErr()) {
-    return Err(result.unwrapErr());
-  }
-
-  try {
-    return Ok(await result.unwrap().run(denops));
-  } catch (e: unknown) {
-    return Err(e);
-  }
-}
-
-export async function process(
-  denops: Denops,
-  name: string,
-  option: Record<string, unknown>,
-  source: string[],
-): Promise<Result<string[], unknown>> {
-  const result = await loadTatakuModule<Processor>(
-    denops,
-    {
-      kind: "processor",
-      name: name,
-    },
-    option,
-  );
-
-  if (result.isErr()) {
-    return Err(result.unwrapErr());
-  }
-
-  try {
-    return Ok(await result.unwrap().run(denops, source));
-  } catch (e: unknown) {
-    return Err(e);
-  }
-}
-
-export async function emit(
-  denops: Denops,
-  name: string,
-  option: Record<string, unknown>,
-  source: string[],
-): Promise<Result<undefined, unknown>> {
-  const result = await loadTatakuModule<Emitter>(
-    denops,
-    {
-      kind: "emitter",
-      name: name,
-    },
-    option,
-  );
-
-  if (result.isErr()) {
-    return Err(result.unwrapErr());
-  }
-
-  try {
-    await result.unwrap().run(denops, source);
-    return Ok(undefined);
-  } catch (e) {
-    return Err(e);
-  }
+  return Ok({
+    collector,
+    processors,
+    emitter,
+  });
 }
