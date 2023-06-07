@@ -1,13 +1,15 @@
-export type Recipe = {
-  collector: RecipePage;
-  processor: RecipePage[];
-  emitter: RecipePage;
-};
+import { $array, $object, $opt, $string } from "./deps.ts";
 
-export type RecipePage = {
-  name: string;
-  options: Record<string, unknown>;
-};
+export const recipePage = $object({
+  name: $string,
+  options: $opt($object({}, false)),
+});
+
+export const validate = $object({
+  collector: recipePage,
+  processor: $array(recipePage),
+  emitter: recipePage,
+});
 
 export type Kind = "collector" | "processor" | "emitter";
 

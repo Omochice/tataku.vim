@@ -1,12 +1,5 @@
-import {
-  Denops,
-  isArray,
-  isFunction,
-  isObject,
-  isString,
-  isUndefined,
-} from "./deps.ts";
-import { Kind, Recipe, RecipePage } from "./types.ts";
+import { Denops, isFunction, isObject } from "./deps.ts";
+import { Kind } from "./types.ts";
 import { Collector, Emitter, Processor } from "./interface.ts";
 
 /**
@@ -52,50 +45,6 @@ export function isTatakuModule<T extends Collector | Processor | Emitter>(
   x: unknown,
 ): x is T {
   return isObject(x) && (isFunction(x.run) || isAsyncFunction(x.run));
-}
-
-/**
- * Return `true` if the type of `x` is `Recipe`
- *
- * @example
- * ```typescript
- * const r = {
- *   collector: { name: "sample", options: {}, },
- *   processor: [{ name: "sample", options: {}, },],
- *   emitter: { name: "sample", options: {}, },
- *   }
- * isRecipe(r)
- * // true
- * ```
- */
-export function isRecipe(x: unknown): x is Recipe {
-  if (!isObject(x)) {
-    return false;
-  }
-  const acceptCollector = isObject(x.collector) && isRecipePage(x.collector);
-  const acceptProcessor = isArray(x.processor) &&
-    x.processor.every((p) => isObject(p) && isRecipePage(p));
-  const acceptEmitter = isObject(x.emitter) && isRecipePage(x.emitter);
-  return acceptCollector && acceptProcessor && acceptEmitter;
-}
-
-/**
- * Return `true` if the type of `x` is `RecipePage`
- *
- * @example
- * ```typescript
- * const r = { name: "sample", options: { name: 42 }, }
- * isRecipePage(r)
- * // true
- * const r = { name: "sample", }
- * isRecipePage(r)
- * // true
- * ```
- */
-export function isRecipePage(x: Record<string, unknown>): x is RecipePage {
-  const acceptName = isString(x.name);
-  const acceptOptions = isUndefined(x.options) || isObject(x.options);
-  return acceptName && acceptOptions;
 }
 
 /**

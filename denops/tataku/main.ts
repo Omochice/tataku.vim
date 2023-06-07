@@ -1,12 +1,16 @@
 import { Denops, isArray, isString } from "./deps.ts";
-import { echoError, handleError, isRecipe } from "./utils.ts";
+import { echoError, handleError } from "./utils.ts";
 import { collect, emit, process } from "./tataku.ts";
+import { validate } from "./types.ts";
 
 export async function main(denops: Denops): Promise<void> {
   denops.dispatcher = {
     async run(recipe: unknown): Promise<void> {
-      if (!isRecipe(recipe)) {
-        echoError(denops, `The recipe is invalid format: ${recipe}`);
+      if (!validate(recipe)) {
+        echoError(
+          denops,
+          `The recipe is invalid format: ${JSON.stringify(recipe)}`,
+        );
         return;
       }
 
@@ -54,8 +58,11 @@ export async function main(denops: Denops): Promise<void> {
       }
     },
     async runWithoutCollector(recipe: unknown, source: unknown): Promise<void> {
-      if (!isRecipe(recipe)) {
-        echoError(denops, `The recipe is invalid format: ${recipe}`);
+      if (!validate(recipe)) {
+        echoError(
+          denops,
+          `The recipe is invalid format: ${JSON.stringify(recipe)}`,
+        );
         return;
       }
       if (!isArray(source, isString)) {
