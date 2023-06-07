@@ -1,10 +1,10 @@
 import {
   Denops,
   ensureArray,
-  err,
+  Err,
   fn,
   isString,
-  ok,
+  Ok,
   op,
   Result,
   toFileUrl,
@@ -36,12 +36,12 @@ export async function loadTatakuModule<
 
   if (founds.length === 0) {
     const e = new Error(`${expectedPath} is not included in &runtimepath.`);
-    return err(e);
+    return Err(e);
   }
   if (founds.length > 1) {
     // module should have uniq name
     const e = new Error(`${expectedPath} found duplicatedly: ${founds}`);
-    return err(e);
+    return Err(e);
   }
 
   const { default: loaded } = await import(toFileUrl(founds[0]).href);
@@ -53,9 +53,9 @@ export async function loadTatakuModule<
     const e = new Error(
       `Module of ${expectedPath} must have "run" function.`,
     );
-    return err(e);
+    return Err(e);
   }
-  return ok(constructed);
+  return Ok(constructed);
 }
 
 export async function collect(
@@ -73,13 +73,13 @@ export async function collect(
   );
 
   if (result.isErr()) {
-    return err(result.error);
+    return Err(result.unwrapErr());
   }
 
   try {
-    return ok(await result.value.run(denops));
+    return Ok(await result.unwrap().run(denops));
   } catch (e: unknown) {
-    return err(e);
+    return Err(e);
   }
 }
 
@@ -99,13 +99,13 @@ export async function process(
   );
 
   if (result.isErr()) {
-    return err(result.error);
+    return Err(result.unwrapErr());
   }
 
   try {
-    return ok(await result.value.run(denops, source));
+    return Ok(await result.unwrap().run(denops, source));
   } catch (e: unknown) {
-    return err(e);
+    return Err(e);
   }
 }
 
@@ -125,13 +125,13 @@ export async function emit(
   );
 
   if (result.isErr()) {
-    return err(result.error);
+    return Err(result.unwrapErr());
   }
 
   try {
-    await result.value.run(denops, source);
-    return ok(undefined);
+    await result.unwrap().run(denops, source);
+    return Ok(undefined);
   } catch (e) {
-    return err(e);
+    return Err(e);
   }
 }
