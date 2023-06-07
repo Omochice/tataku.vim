@@ -64,7 +64,7 @@ export async function main(denops: Denops): Promise<void> {
 
       const { processor: processors, emitter } = recipe;
 
-      let processed = source
+      let processed = source;
       for (const processor of processors) {
         const result = await process(
           denops,
