@@ -1,15 +1,26 @@
-name: Denopendabot
+name: deno ci
 
 on:
-  workflow_dispatch:
-  schedule:
-    - cron: "0 0 * * FRI"
+  - push
 
 jobs:
-  update:
-    name: Update by Denopendabot
+  deno_fmt:
     runs-on: ubuntu-latest
     steps:
-      - uses: hasundue/denopendabot@0.16.1
-        with:
-          user-token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/checkout@v3
+      - uses: denoland/setup-deno@v1
+      - run: deno fmt --check ./denops/**/*.ts
+  deno_check:
+    runs-on: ubuntu-latest
+    needs: deno_fmt
+    steps:
+      - uses: actions/checkout@v3
+      - uses: denoland/setup-deno@v1
+      - run: deno check ./denops/**/*.ts
+  deno_lint:
+    runs-on: ubuntu-latest
+    needs: deno_fmt
+    steps:
+      - uses: actions/checkout@v3
+      - uses: denoland/setup-deno@v1
+      - run: deno lint ./denops/**/*.ts
