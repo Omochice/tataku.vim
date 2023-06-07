@@ -11,53 +11,21 @@ export async function main(denops: Denops): Promise<void> {
       }
     },
     async runWithoutCollector(
-      _recipe: unknown,
-      _source: unknown,
+      recipe: unknown,
+      selected: unknown,
     ): Promise<void> {
-      await Promise.resolve();
-      // if (!validate(recipe)) {
-      //   echoError(
-      //     denops,
-      //     `The recipe is invalid format: ${JSON.stringify(recipe)}`,
-      //   );
-      //   return;
-      // }
-      // if (!isArray(source, isString)) {
-      //   return;
-      // }
-
-      // const { processor: processors, emitter } = recipe;
-
-      // let processed = source;
-      // for (const processor of processors) {
-      //   const result = await process(
-      //     denops,
-      //     processor.name,
-      //     processor.options ?? {},
-      //     processed,
-      //   );
-      //   if (result.isErr()) {
-      //     await handleError(
-      //       denops,
-      //       "processor",
-      //       processor.name,
-      //       result.unwrap(),
-      //     );
-      //     return;
-      //   }
-      //   processed = result.unwrap();
-      // }
-
-      // const result = await emit(
-      //   denops,
-      //   emitter.name,
-      //   emitter.options ?? {},
-      //   processed,
-      // );
-      // if (result.isErr()) {
-      //   await handleError(denops, "emitter", emitter.name, result.unwrapErr());
-      //   return;
-      // }
+      const replacePage = {
+        collector: {
+          name: "operator",
+          options: {
+            selected,
+          },
+        },
+      };
+      const result = await execute(denops, recipe, replacePage);
+      if (result.isErr()) {
+        echoError(denops, result.unwrapErr().message);
+      }
     },
   };
   await Promise.resolve();
