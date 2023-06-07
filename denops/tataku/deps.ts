@@ -11,10 +11,4 @@ export {
   type Result,
 } from "https://deno.land/x/monads@v0.5.10/mod.ts";
 
-export {
-  $array,
-  $object,
-  $opt,
-  $string,
-  type Infer,
-} from "https://esm.sh/lizod@0.2.4";
+export { $array, $object, $opt, $string } from "https://esm.sh/lizod@0.2.4";

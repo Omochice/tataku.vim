@@ -1,4 +1,4 @@
-import { $array, $object, $opt, $string, Infer } from "./deps.ts";
+import { $array, $object, $opt, $string } from "./deps.ts";
 
 export const recipePage = $object({
   name: $string,
@@ -10,8 +10,6 @@ export const validate = $object({
   processor: $array(recipePage),
   emitter: recipePage,
 });
-
-export type Recipe = Infer<typeof validate>;
 
 export type Kind = "collector" | "processor" | "emitter";
 
