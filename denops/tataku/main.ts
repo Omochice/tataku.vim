@@ -22,11 +22,16 @@ export async function main(denops: Denops): Promise<void> {
         collector.options ?? {},
       );
       if (collected.isErr()) {
-        await handleError(denops, "collector", collector.name, collected.error);
+        await handleError(
+          denops,
+          "collector",
+          collector.name,
+          collected.unwrapErr(),
+        );
         return;
       }
 
-      let processed = collected.value;
+      let processed = collected.unwrap();
       for (const processor of processors) {
         const result = await process(
           denops,
@@ -39,11 +44,11 @@ export async function main(denops: Denops): Promise<void> {
             denops,
             "processor",
             processor.name,
-            result.error,
+            result.unwrapErr(),
           );
           return;
         }
-        processed = result.value;
+        processed = result.unwrap();
       }
 
       const result = await emit(
@@ -53,7 +58,7 @@ export async function main(denops: Denops): Promise<void> {
         processed,
       );
       if (result.isErr()) {
-        await handleError(denops, "emitter", emitter.name, result.error);
+        await handleError(denops, "emitter", emitter.name, result.unwrapErr());
         return;
       }
     },
@@ -84,11 +89,11 @@ export async function main(denops: Denops): Promise<void> {
             denops,
             "processor",
             processor.name,
-            result.error,
+            result.unwrap(),
           );
           return;
         }
-        processed = result.value;
+        processed = result.unwrap();
       }
 
       const result = await emit(
@@ -98,7 +103,7 @@ export async function main(denops: Denops): Promise<void> {
         processed,
       );
       if (result.isErr()) {
-        await handleError(denops, "emitter", emitter.name, result.error);
+        await handleError(denops, "emitter", emitter.name, result.unwrapErr());
         return;
       }
     },
