@@ -62,7 +62,7 @@ export async function loadCollector(
   if (result.isErr()) {
     return Err(result.unwrapErr());
   }
-  return (await import(result.unwrap().href)).default;
+  return Ok((await import(result.unwrap().href)).default);
 }
 
 export async function loadProcessor(
@@ -73,7 +73,7 @@ export async function loadProcessor(
   if (result.isErr()) {
     return Err(result.unwrapErr());
   }
-  return (await import(result.unwrap().href)).default;
+  return Ok((await import(result.unwrap().href)).default);
 }
 
 export async function loadEmitter(
@@ -84,5 +84,5 @@ export async function loadEmitter(
   if (result.isErr()) {
     return Err(result.unwrapErr());
   }
-  return (await import(result.unwrap().href)).default;
+  return Ok((await import(result.unwrap().href)).default);
 }
