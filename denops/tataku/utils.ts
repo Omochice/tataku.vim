@@ -35,3 +35,24 @@ export async function handleError(
     );
   }
 }
+
+/**
+ * Return `true` if the type of `x` is `async function`.
+ *
+ * @example
+ * ```typescript
+ * const foo = async () => { return Promise.resolve(42) }
+ * isAsyncFunction(foo)
+ * // true
+ *
+ * const bar = () => { return 42 }
+ * isAsyncFunction(bar)
+ * // false
+ * ```
+ */
+export function isAsyncFunction(
+  x: unknown,
+): x is (...args: unknown[]) => Promise<unknown> {
+  // I refered https://github.com/lambdalisue/deno-unknownutil/blob/310bdffd6258e519472cb2b4c3501ee9369bf5d1/is.ts#L59
+  return Object.prototype.toString.call(x) === "[object AsyncFunction]";
+}
