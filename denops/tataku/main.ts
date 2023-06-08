@@ -4,25 +4,11 @@ import { execute } from "./tataku.ts";
 
 export async function main(denops: Denops): Promise<void> {
   denops.dispatcher = {
-    async run(recipe: unknown): Promise<void> {
-      const result = await execute(denops, recipe);
-      if (result.isErr()) {
-        echoError(denops, result.unwrapErr().message);
-      }
-    },
-    async runWithoutCollector(
+    async run(
       recipe: unknown,
-      selected: unknown,
+      selected?: unknown,
     ): Promise<void> {
-      const replacePage = {
-        collector: {
-          name: "operator",
-          options: {
-            selected,
-          },
-        },
-      };
-      const result = await execute(denops, recipe, replacePage);
+      const result = await execute(denops, recipe, selected);
       if (result.isErr()) {
         echoError(denops, result.unwrapErr().message);
       }

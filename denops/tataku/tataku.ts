@@ -87,8 +87,25 @@ function checkRecipe(
     return Err(new Error(":Internal error: replacing collector is failed"));
   }
 
-  return Ok({
+  const replacedRecipe = {
     ...recipe,
-    ...replacement,
-  });
+    ...{
+      collector: {
+        name: "operator",
+        options: {
+          selected: replacement,
+        },
+      },
+    },
+  };
+
+  if (!validate(replacedRecipe)) {
+    return Err(
+      new Error(
+        `The recipe is invalid format: ${JSON.stringify(replacedRecipe)}`,
+      ),
+    );
+  }
+
+  return Ok(replacedRecipe);
 }

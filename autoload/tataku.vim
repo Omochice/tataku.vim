@@ -31,7 +31,7 @@ function! tataku#_operator(recipe_name) abort
       return
     endif
     call denops#plugin#wait('tataku')
-    call denops#notify('tataku', 'runWithoutCollector', [l:recipe, l:selected])
+    call denops#notify('tataku', 'run', [l:recipe, l:selected])
   endfunction
 
   return function('s:operator')
