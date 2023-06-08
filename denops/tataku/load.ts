@@ -29,7 +29,7 @@ async function search(
     "denops",
     "@tataku",
     query.kind,
-    `${query.name}.ts"`,
+    `${query.name}.ts`,
   );
   const founds = await fn.globpath(
     denops,
