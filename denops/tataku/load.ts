@@ -38,7 +38,7 @@ async function search(
     false,
     true,
   ) as unknown;
-  if (!isArray(founds)) {
+  if (!isArray(founds) || founds.length === 0) {
     return Err(new Error(`${expectedPath} is not found in rtp...`));
   }
   if (founds.length !== 1) {
