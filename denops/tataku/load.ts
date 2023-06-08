@@ -2,8 +2,7 @@ import {
   Denops,
   Err,
   fn,
-  isArray,
-  isString,
+  is,
   join,
   Ok,
   op,
@@ -11,6 +10,7 @@ import {
   toFileUrl,
 } from "./deps.ts";
 import { Collector, Emitter, Processor } from "./types.ts";
+import { isAsyncFunction } from "./utils.ts";
 
 type Kind = "collector" | "processor" | "emitter";
 
@@ -38,7 +38,14 @@ async function search(
     false,
     true,
   ) as unknown;
-  if (!isArray(founds) || founds.length === 0) {
+  if (!is.ArrayOf(is.String)(founds)) {
+    return Err(
+      new Error(
+        `globpath must return array of string: ${JSON.stringify(founds)}`,
+      ),
+    );
+  }
+  if (founds.length === 0) {
     return Err(new Error(`${expectedPath} is not found in rtp...`));
   }
   if (founds.length !== 1) {
@@ -47,9 +54,6 @@ async function search(
         `path(${expectedPath}) is found multiply: ${JSON.stringify(founds)}}`,
       ),
     );
-  }
-  if (!isString(founds[0])) {
-    return Err(new Error(`:Internal error: path is not string: ${founds[0]}`));
   }
   return Ok(toFileUrl(founds[0]));
 }
@@ -62,7 +66,11 @@ export async function loadCollector(
   if (result.isErr()) {
     return Err(result.unwrapErr());
   }
-  return Ok((await import(result.unwrap().href)).default);
+  const factory = (await import(result.unwrap().href)).default;
+  if (!is.Function(factory) && !isAsyncFunction(factory)) {
+    return Err(new Error(`loading collector(${name}) is failed.`));
+  }
+  return Ok(factory as Factory<Collector>);
 }
 
 export async function loadProcessor(
@@ -73,7 +81,11 @@ export async function loadProcessor(
   if (result.isErr()) {
     return Err(result.unwrapErr());
   }
-  return Ok((await import(result.unwrap().href)).default);
+  const factory = (await import(result.unwrap().href)).default;
+  if (!is.Function(factory) && !isAsyncFunction(factory)) {
+    return Err(new Error(`loading processor(${name}) is failed.`));
+  }
+  return Ok(factory as Factory<Processor>);
 }
 
 export async function loadEmitter(
@@ -84,5 +96,9 @@ export async function loadEmitter(
   if (result.isErr()) {
     return Err(result.unwrapErr());
   }
-  return Ok((await import(result.unwrap().href)).default);
+  const factory = (await import(result.unwrap().href)).default;
+  if (!is.Function(factory) && !isAsyncFunction(factory)) {
+    return Err(new Error(`loading emitter(${name}) is failed.`));
+  }
+  return Ok(factory as Factory<Emitter>);
 }
