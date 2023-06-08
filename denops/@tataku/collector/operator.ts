@@ -1,4 +1,4 @@
-import { $array, $object, $string, Denops } from "../../deps.ts";
+import { $array, $object, $string, Denops } from "../../tataku/deps.ts";
 
 const validate = $object({
   selected: $array($string),
