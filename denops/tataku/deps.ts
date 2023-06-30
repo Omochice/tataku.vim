@@ -1,15 +1,15 @@
-export type { Denops } from "https://deno.land/x/denops_std@v5.0.0/mod.ts";
-export * as op from "https://deno.land/x/denops_std@v5.0.0/option/mod.ts";
-export * as fn from "https://deno.land/x/denops_std@v5.0.0/function/mod.ts";
+export type { Denops } from "https://deno.land/x/denops_std@v5.0.1/mod.ts";
+export * as op from "https://deno.land/x/denops_std@v5.0.1/option/mod.ts";
+export * as fn from "https://deno.land/x/denops_std@v5.0.1/function/mod.ts";
 export {
   ensureArray,
   isArray,
   isFunction,
   isObject,
   isString,
-} from "https://deno.land/x/unknownutil@v2.1.1/mod.ts";
+} from "https://deno.land/x/unknownutil@v3.2.0/mod.ts";
 
-export { toFileUrl } from "https://deno.land/std@0.189.0/path/mod.ts";
+export { toFileUrl } from "https://deno.land/std@0.192.0/path/mod.ts";
 
 export {
   Err,
