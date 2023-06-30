@@ -1,131 +1,111 @@
-import { Denops, Err, fn, is, Ok, op, Result, toFileUrl } from "./deps.ts";
-import { isTatakuModule } from "./utils.ts";
-import { Query } from "./types.ts";
-import { Collector, Emitter, Processor } from "./interface.ts";
+import { Denops, Err, Ok, Result } from "./deps.ts";
+import { Recipe, validate } from "./types.ts";
+import { Collector, Emitter, Processor } from "./types.ts";
+import { loadCollector, loadEmitter, loadProcessor } from "./load.ts";
 
-export async function loadTatakuModule<
-  T extends Collector | Processor | Emitter,
->(
+type Streams = {
+  collector: Collector;
+  processors: Processor[];
+  emitter: Emitter;
+};
+
+export function execute(
   denops: Denops,
-  query: Query,
-  option: Record<string, unknown>,
-): Promise<
-  Result<T, Error>
-> {
-  const expectedPath = `denops/@tataku/${query.kind}/${query.name}.ts`;
-  const founds = await fn.globpath(
-    denops,
-    await op.runtimepath.getGlobal(denops),
-    expectedPath,
-    false,
-    true,
-  );
-  if (!is.ArrayOf(is.String)(founds)) {
+  recipe: unknown,
+  replacement?: unknown,
+): Promise<Result<undefined, Error>> {
+  return prepareStreams(denops, recipe, replacement)
+    .then((r) =>
+      r.andThen((streams: Streams) => {
+        streams.processors
+          .reduce(
+            (acc: Collector, p: Processor) => acc.pipeThrough(p),
+            streams.collector,
+          )
+          .pipeTo(streams.emitter);
+        return Ok(undefined);
+      })
+    );
+}
+
+async function prepareStreams(
+  denops: Denops,
+  originalRecipe: unknown,
+  replacement?: unknown,
+): Promise<Result<Streams, Error>> {
+  const checked = checkRecipe(originalRecipe, replacement);
+  if (checked.isErr()) {
+    return Err(checked.unwrapErr());
+  }
+  const recipe = checked.unwrap();
+
+  const results = await Promise.all([
+    loadCollector(denops, recipe.collector.name)
+      .then((r) => {
+        return r.andThen((factory) =>
+          Ok(factory(denops, recipe.collector.options ?? {}))
+        );
+      }),
+    Promise.all(recipe.processor.map((processorPage) => {
+      return loadProcessor(denops, processorPage.name).then((r) =>
+        r.andThen((factory) => Ok(factory(denops, processorPage.options ?? {})))
+      );
+    })),
+    loadEmitter(denops, recipe.emitter.name)
+      .then((r) => {
+        return r.andThen((factory) =>
+          Ok(factory(denops, recipe.emitter.options ?? {}))
+        );
+      }),
+  ]);
+  const firstFailed = results.flat().find((r) => r.isErr());
+  if (firstFailed !== undefined) {
+    return Err(firstFailed.unwrapErr());
+  }
+  return Ok({
+    collector: results[0].unwrap(),
+    processors: results[1].map((e) => e.unwrap()),
+    emitter: results[2].unwrap(),
+  });
+}
+
+function checkRecipe(
+  recipe: unknown,
+  replacement?: unknown,
+): Result<Recipe, Error> {
+  if (!validate(recipe)) {
     return Err(
       new Error(
-        `globpath must be return array of string: ${JSON.stringify(founds)}`,
+        `The recipe is invalid format: ${JSON.stringify(recipe)}`,
+      ),
+    );
+  }
+  if (replacement === undefined) {
+    return Ok(recipe);
+  }
+  if (replacement === null) {
+    return Err(new Error(":Internal error: replacing collector is failed"));
+  }
+
+  const replacedRecipe = {
+    ...recipe,
+    ...{
+      collector: {
+        name: "operator",
+        options: {
+          selected: replacement,
+        },
+      },
+    },
+  };
+
+  if (!validate(replacedRecipe)) {
+    return Err(
+      new Error(
+        `The recipe is invalid format: ${JSON.stringify(replacedRecipe)}`,
       ),
     );
   }
 
-  if (founds.length === 0) {
-    const e = new Error(`${expectedPath} is not included in &runtimepath.`);
-    return Err(e);
-  }
-  if (founds.length > 1) {
-    // module should have uniq name
-    const e = new Error(`${expectedPath} found duplicatedly: ${founds}`);
-    return Err(e);
-  }
-
-  const { default: loaded } = await import(toFileUrl(founds[0]).href);
-
-  const constructed = new loaded(option);
-
-  if (!isTatakuModule<T>(constructed)) {
-    // module should have "run" property
-    const e = new Error(
-      `Module of ${expectedPath} must have "run" function.`,
-    );
-    return Err(e);
-  }
-  return Ok(constructed);
-}
-
-export async function collect(
-  denops: Denops,
-  name: string,
-  option: Record<string, unknown>,
-): Promise<Result<string[], unknown>> {
-  const result = await loadTatakuModule<Collector>(
-    denops,
-    {
-      kind: "collector",
-      name: name,
-    },
-    option,
-  );
-
-  if (result.isErr()) {
-    return Err(result.unwrapErr());
-  }
-
-  try {
-    return Ok(await result.unwrap().run(denops));
-  } catch (e: unknown) {
-    return Err(e);
-  }
-}
-
-export async function process(
-  denops: Denops,
-  name: string,
-  option: Record<string, unknown>,
-  source: string[],
-): Promise<Result<string[], unknown>> {
-  const result = await loadTatakuModule<Processor>(
-    denops,
-    {
-      kind: "processor",
-      name: name,
-    },
-    option,
-  );
-
-  if (result.isErr()) {
-    return Err(result.unwrapErr());
-  }
-
-  try {
-    return Ok(await result.unwrap().run(denops, source));
-  } catch (e: unknown) {
-    return Err(e);
-  }
-}
-
-export async function emit(
-  denops: Denops,
-  name: string,
-  option: Record<string, unknown>,
-  source: string[],
-): Promise<Result<undefined, unknown>> {
-  const result = await loadTatakuModule<Emitter>(
-    denops,
-    {
-      kind: "emitter",
-      name: name,
-    },
-    option,
-  );
-
-  if (result.isErr()) {
-    return Err(result.unwrapErr());
-  }
-
-  try {
-    await result.unwrap().run(denops, source);
-    return Ok(undefined);
-  } catch (e) {
-    return Err(e);
-  }
+  return Ok(replacedRecipe);
 }
