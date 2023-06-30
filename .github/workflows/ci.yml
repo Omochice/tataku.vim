@@ -9,18 +9,18 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: denoland/setup-deno@v1
-      - run: deno fmt --check ./denops/**/*.ts
+      - run: deno task fmt:check
   deno_check:
     runs-on: ubuntu-latest
     needs: deno_fmt
     steps:
       - uses: actions/checkout@v3
       - uses: denoland/setup-deno@v1
-      - run: deno check ./denops/**/*.ts
+      - run: deno task check
   deno_lint:
     runs-on: ubuntu-latest
     needs: deno_fmt
     steps:
       - uses: actions/checkout@v3
       - uses: denoland/setup-deno@v1
-      - run: deno lint ./denops/**/*.ts
+      - run: deno task lint
