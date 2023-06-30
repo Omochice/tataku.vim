@@ -1,14 +1,4 @@
-import {
-  Denops,
-  ensureArray,
-  Err,
-  fn,
-  isString,
-  Ok,
-  op,
-  Result,
-  toFileUrl,
-} from "./deps.ts";
+import { Denops, Err, fn, is, Ok, op, Result, toFileUrl } from "./deps.ts";
 import { isTatakuModule } from "./utils.ts";
 import { Query } from "./types.ts";
 import { Collector, Emitter, Processor } from "./interface.ts";
@@ -23,16 +13,20 @@ export async function loadTatakuModule<
   Result<T, Error>
 > {
   const expectedPath = `denops/@tataku/${query.kind}/${query.name}.ts`;
-  const founds = ensureArray(
-    await fn.globpath(
-      denops,
-      await op.runtimepath.getGlobal(denops),
-      expectedPath,
-      false,
-      true,
-    ),
-    isString,
+  const founds = await fn.globpath(
+    denops,
+    await op.runtimepath.getGlobal(denops),
+    expectedPath,
+    false,
+    true,
   );
+  if (!is.ArrayOf(is.String)(founds)) {
+    return Err(
+      new Error(
+        `globpath must be return array of string: ${JSON.stringify(founds)}`,
+      ),
+    );
+  }
 
   if (founds.length === 0) {
     const e = new Error(`${expectedPath} is not included in &runtimepath.`);

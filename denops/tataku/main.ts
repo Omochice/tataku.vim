@@ -1,4 +1,4 @@
-import { Denops, isArray, isString } from "./deps.ts";
+import { Denops, is } from "./deps.ts";
 import { echoError, handleError } from "./utils.ts";
 import { collect, emit, process } from "./tataku.ts";
 import { validate } from "./types.ts";
@@ -70,7 +70,7 @@ export async function main(denops: Denops): Promise<void> {
         );
         return;
       }
-      if (!isArray(source, isString)) {
+      if (!is.ArrayOf(is.String)(source)) {
         return;
       }
 

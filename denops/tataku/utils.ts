@@ -1,4 +1,4 @@
-import { Denops, isFunction, isObject } from "./deps.ts";
+import { Denops, is } from "./deps.ts";
 import { Kind } from "./types.ts";
 import { Collector, Emitter, Processor } from "./interface.ts";
 
@@ -44,7 +44,9 @@ export function isAsyncFunction(
 export function isTatakuModule<T extends Collector | Processor | Emitter>(
   x: unknown,
 ): x is T {
-  return isObject(x) && (isFunction(x.run) || isAsyncFunction(x.run));
+  return is.ObjectOf({
+    run: is.OneOf([is.Function, isAsyncFunction]),
+  })(x);
 }
 
 /**
