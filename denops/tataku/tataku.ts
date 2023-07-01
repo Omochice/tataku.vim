@@ -9,23 +9,28 @@ type Streams = {
   emitter: Emitter;
 };
 
-export function execute(
+export async function execute(
   denops: Denops,
   recipe: unknown,
   replacement?: unknown,
-): Promise<Result<undefined, Error>> {
-  return prepareStreams(denops, recipe, replacement)
-    .then((r) =>
-      r.andThen((streams: Streams) => {
-        streams.processors
-          .reduce(
-            (acc: Collector, p: Processor) => acc.pipeThrough(p),
-            streams.collector,
-          )
-          .pipeTo(streams.emitter);
-        return Ok(undefined);
-      })
-    );
+): Promise<Result<void, Error>> {
+  const result = await prepareStreams(denops, recipe, replacement);
+  if (result.isErr()) {
+    return Err(result.unwrapErr());
+  }
+  const streams = result.unwrap();
+  try {
+    await streams
+      .processors
+      .reduce(
+        (body, processor) => body.pipeThrough(processor),
+        streams.collector,
+      )
+      .pipeTo(streams.emitter);
+    return Ok(undefined);
+  } catch (e: unknown) {
+    return Err(new Error(`${e}`, { cause: e }));
+  }
 }
 
 async function prepareStreams(
