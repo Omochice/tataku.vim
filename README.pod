@@ -1,0 +1,120 @@
+---
+name: tataku.vim
+description: The plugin that define protocol
+---
+
+=pod
+
+=head1 tataku.vim
+
+=head2 CONTENTS X<tataku-contents>
+
+=item * L<Introduction|tataku-introduction>
+
+=item * L<Dependencies|tataku-dependencies>
+
+=item * L<Terms|tataku-terms>
+
+=item * L<Functions|tataku-functions>
+
+=item * L<Variables|tataku-variables>
+
+=item * L<Operator|tataku-operator>
+
+=item * L<For developer|tataku-for-developer>
+
+
+=head2 INTRODUCTION X<tataku-introductin>
+
+L<tataku.vim|https://github.com/Omochice/tataku.vim> define protocol between collector-processor, processor-processor, processor-emitter.
+
+=head2 DEPENDENCIES X<tataku-dependencies>
+
+This plugin depends below:
+
+=item * [vim-denops/denops.vim](https://github.com/vim-denops/denops.vim)
+
+
+=head2 TERMS X<tataku-terms>
+
+L<tataku.vim> must have recipes define by user.
+
+Recipe must have three parts.
+
+=item * Collector X<tataku-term-collector>
+"Collector" collect strings from some resources.
+
+=item * Processor X<tataku-term-processor>
+"Processor" process strings and pass strings to next processor.
+
+=item * Emitter X<tatak-term-emitter>
+"Emitter" output strings to some resources.
+
+
+Recipe must be below format:
+
+ {
+ \       "collector": { "name": string, "options": dict, },
+ \       "processor": [ { "name": string, "options": dict, } ],
+ \       "emitter":   { "name": string, "options": dict, },
+ \ }
+
+"Collector" and "Emitter" can be specified only one module.
+But "Processor" can be specified multiply.
+
+Each module have two keys.
+
+=item * name
+The name of module.
+If you use `tataku-collector-current_line`, specify `current_line`.
+
+=item * options (optional)
+The options for the module.
+
+
+=head2 FUNCTIONS X<tataku-functions>
+
+C<tataku#call_recipe(recipe_name)> X<tataku#call_recipe>
+
+Call recipe which registered in L<g:tataku_recipes>.
+
+=head2 VARIABLES X<tataku-variable>
+
+=item * L<g:tataku_recipes> X<g:tataku_recipes>
+The recipe book.
+Default: C<{}>
+
+=item * L<g:tataku_enable_operator> X<g:tatku_enable_operator>
+Enable operator mappings starts with C<E<lt>PlugE<gt>(operator-tataku->.
+Default: C<v:false>
+
+
+=head2 OPERATOR X<tataku-operator>
+
+If set C<v:true> to C<g:tataku_enable_opeator>, The operator mapping will be enable.
+
+The mapping starts with C<E<lt>PlugE<gt>(operator-tataku->
+
+If you registered C<foo> and C<bar> into C<g:tataku_recipes>, C<E<lt>PlugE<gt>(operator-tataku-foo)> and C<E<lt>PlugE<gt>(operator-tataku-bar)> will be enabled.
+
+NOTE: If call recipe via operator, C<collector> module is ignored and use motion/textobj instead of its.
+
+=head2 FOR DEVELOPER X<tatku-fordeveloper>
+
+This section explains how to create module.
+
+When calling recipe, tataku.vim import module from C<denops/@tataku/E<lt>module-typeE<gt>/E<lt>module-nameE<gt>.ts> within &runtimepath.
+
+The module must export stream factory function as C<export default>.
+
+Each module mapped to:
+
+=item * collector: C<ReadableStreamE<lt>string[]E<gt>>
+
+=item * processor: C<TransformStreamE<lt>string[]E<gt>>
+
+=item * collector: C<WritableStreamE<lt>string[]E<gt>>
+
+
+=cut
+
