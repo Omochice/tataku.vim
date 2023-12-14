@@ -1,4 +1,4 @@
-import { assert } from "https://deno.land/std@0.208.0/testing/asserts.ts";
+import { assert } from "https://deno.land/std@0.209.0/testing/asserts.ts";
 import { isAsyncFunction } from "././utils.ts";
 
 Deno.test({
