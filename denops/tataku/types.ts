@@ -1,17 +1,17 @@
-import { $array, $object, $opt, $string, type Infer } from "./deps.ts";
+import { is, type PredicateType } from "./deps.ts";
 
-const recipePage = $object({
-  name: $string,
-  options: $opt($object({}, false)),
+const recipePage = is.ObjectOf({
+  name: is.String,
+  options: is.OptionalOf(is.ObjectOf({})),
 });
 
-export const validate = $object({
+export const validate = is.ObjectOf({
   collector: recipePage,
-  processor: $array(recipePage),
+  processor: is.ArrayOf(recipePage),
   emitter: recipePage,
 });
 
-export type Recipe = Infer<typeof validate>;
+export type Recipe = PredicateType<typeof validate>;
 
 export type Kind = "collector" | "processor" | "emitter";
 
