@@ -29,7 +29,7 @@ Use your favorite plugin manager.
     Jetpack 'Omochice/tataku.vim'
     Jetpack 'vim-denops/denops.vim'
     ```
-    
+
 ## Use
 
 To use this plugin, you must install **collector**, **processor** and **emitter**.
