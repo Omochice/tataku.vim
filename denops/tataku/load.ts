@@ -30,9 +30,12 @@ function search(
     query.kind,
     `${query.name}.ts`,
   );
-  return ResultAsync.fromSafePromise(op.runtimepath.getGlobal(denops))
+  return ResultAsync.fromPromise(
+    op.runtimepath.getGlobal(denops),
+    (cause) => new Error("Failed to get &runtimepath", { cause }),
+  )
     .andThen((rtp: unknown) =>
-      ResultAsync.fromSafePromise(
+      ResultAsync.fromPromise(
         fn.globpath(
           denops,
           rtp,
@@ -40,6 +43,7 @@ function search(
           false,
           true,
         ),
+        (cause) => new Error("Failed to execute globpath", { cause }),
       )
     ).andThen((founds: unknown) => {
       if (!is.ArrayOf(is.String)(founds)) {
@@ -71,8 +75,9 @@ export function loadCollector(
 ): ResultAsync<Factory<Collector>, Error> {
   return search(denops, { kind: "collector", name })
     .andThen((path) => {
-      return ResultAsync.fromSafePromise(
+      return ResultAsync.fromPromise(
         import(path.href).then((e) => e.default),
+        (cause) => new Error(`Failed to load collector-${name}`, { cause }),
       );
     })
     .andThen((factory: unknown) => {
@@ -89,8 +94,9 @@ export function loadProcessor(
 ): ResultAsync<Factory<Processor>, Error> {
   return search(denops, { kind: "processor", name })
     .andThen((path) => {
-      return ResultAsync.fromSafePromise(
+      return ResultAsync.fromPromise(
         import(path.href).then((e) => e.default),
+        (cause) => new Error(`Failed to processor-${name}`, { cause }),
       );
     })
     .andThen((factory: unknown) => {
@@ -107,8 +113,9 @@ export function loadEmitter(
 ): ResultAsync<Factory<Emitter>, Error> {
   return search(denops, { kind: "emitter", name })
     .andThen((path) => {
-      return ResultAsync.fromSafePromise(
+      return ResultAsync.fromPromise(
         import(path.href).then((e) => e.default),
+        (cause) => new Error(`Failed to emitter-${name}`, { cause }),
       );
     })
     .andThen((factory: unknown) => {
