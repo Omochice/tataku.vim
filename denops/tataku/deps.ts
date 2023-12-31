@@ -7,10 +7,13 @@ export { join } from "https://deno.land/std@0.209.0/path/mod.ts";
 export { toFileUrl } from "https://deno.land/std@0.209.0/path/mod.ts";
 
 export {
-  Err,
-  Ok,
-  type Result,
-} from "https://deno.land/x/monads@v0.5.10/mod.ts";
+  err,
+  errAsync,
+  ok,
+  okAsync,
+  Result,
+  ResultAsync,
+} from "npm:neverthrow@6.1.0";
 
 export {
   $array,
