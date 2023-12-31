@@ -14,6 +14,9 @@ class CombinedProcessorStream extends TransformStream<string[]> {
   writable: WritableStream<string[]>;
   constructor(streams: Processor[]) {
     super();
+    if (streams.length === 0) {
+      throw new Error("Conbine target is must be exists", { cause: streams });
+    }
     this.writable = streams[0].writable;
     this.readable = streams.at(-1)!.readable;
 
