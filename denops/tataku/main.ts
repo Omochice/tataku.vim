@@ -8,10 +8,13 @@ export async function main(denops: Denops): Promise<void> {
       recipe: unknown,
       selected?: unknown,
     ): Promise<void> {
-      const result = await execute(denops, recipe, selected);
-      if (result.isErr()) {
-        echoError(denops, result.unwrapErr().message);
-      }
+      await execute(denops, recipe, selected)
+        .match(
+          () => {},
+          (err) => {
+            echoError(denops, err.message);
+          },
+        );
     },
   };
   await Promise.resolve();
