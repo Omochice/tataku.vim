@@ -1,11 +1,11 @@
-import { $array, $object, $string, Denops } from "../../tataku/deps.ts";
+import { Denops, is } from "../../tataku/deps.ts";
 
-const validate = $object({
-  selected: $array($string),
+const isOption = is.ObjectOf({
+  selected: is.ArrayOf(is.String),
 });
 
 const collector = (_: Denops, options: unknown) => {
-  if (!validate(options)) {
+  if (!isOption(options)) {
     throw new Error(
       `:Internal error: options is invalid ${JSON.stringify(options)}`,
     );
