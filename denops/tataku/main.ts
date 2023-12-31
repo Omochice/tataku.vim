@@ -1,6 +1,6 @@
 import { Denops } from "./deps.ts";
 import { echoError } from "./utils.ts";
-import { execute } from "./tataku.ts";
+import { prepareStreams } from "./tataku.ts";
 
 export async function main(denops: Denops): Promise<void> {
   denops.dispatcher = {
@@ -8,9 +8,13 @@ export async function main(denops: Denops): Promise<void> {
       recipe: unknown,
       selected?: unknown,
     ): Promise<void> {
-      await execute(denops, recipe, selected)
+      await prepareStreams(denops, recipe, selected)
         .match(
-          () => {},
+          ({ collector, processor, emitter }) => {
+            collector
+              .pipeThrough(processor)
+              .pipeTo(emitter);
+          },
           (err) => {
             echoError(denops, err.message);
           },

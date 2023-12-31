@@ -23,21 +23,7 @@ class CombinedProcessorStream extends TransformStream<string[]> {
   }
 }
 
-export function execute(
-  denops: Denops,
-  recipe: unknown,
-  replacement?: unknown,
-): ResultAsync<void, Error> {
-  return prepareStreams(denops, recipe, replacement)
-    .andThen((streams) => {
-      streams.collector
-        .pipeThrough(streams.processor)
-        .pipeTo(streams.emitter);
-      return okAsync(undefined);
-    });
-}
-
-function prepareStreams(
+export function prepareStreams(
   denops: Denops,
   originalRecipe: unknown,
   replacement?: unknown,
