@@ -2,6 +2,7 @@ name: deno ci
 
 on:
   - push
+  - pull_request
 
 jobs:
   deno_fmt:
