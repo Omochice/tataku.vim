@@ -101,13 +101,12 @@ This section explain how to create module.
 When call recipe, tataku.vim import module from
 `denops/@tataku/<module-type>/<module-name>.ts` within &runtimepath.
 
-The module must has class that are exported as default.
-The class must has two (or over than two) methods:
+The module must export function as default.
+The function must return correspoinding stream:
 
-* `constructor(option: Record<string, unknown>)`
-* `run(denops: Denops, source: string[])`
-
-The interfaces are shown in `../denops/tataku/interface.ts`.
+* Collector: `ReadableStream<string[]>`
+* Processor: `TransformStream<string[]>`
+* Emitter: `WritableStream<string[]>`
 
 ==============================================================================
 vim:tw=78:ts=8:ft=help:norl:noet:fen:fdl=0:
