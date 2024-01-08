@@ -4,7 +4,7 @@ export * as fn from "https://deno.land/x/denops_std@v5.2.0/function/mod.ts";
 export {
   is,
   type PredicateType,
-} from "https://deno.land/x/unknownutil@v3.11.0/mod.ts";
+} from "https://deno.land/x/unknownutil@v3.13.0/mod.ts";
 export { join } from "https://deno.land/std@0.210.0/path/mod.ts";
 
 export { toFileUrl } from "https://deno.land/std@0.210.0/path/mod.ts";
