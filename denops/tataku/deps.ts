@@ -5,9 +5,9 @@ export {
   is,
   type PredicateType,
 } from "https://deno.land/x/unknownutil@v3.16.3/mod.ts";
-export { join } from "https://deno.land/std@0.215.0/path/mod.ts";
+export { join } from "https://deno.land/std@0.216.0/path/mod.ts";
 
-export { toFileUrl } from "https://deno.land/std@0.215.0/path/mod.ts";
+export { toFileUrl } from "https://deno.land/std@0.216.0/path/mod.ts";
 
 export {
   err,
