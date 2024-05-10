@@ -7,7 +7,7 @@ export {
 } from "https://deno.land/x/unknownutil@v3.18.0/mod.ts";
 export { join } from "jsr:@std/path@0.224.0";
 
-export { toFileUrl } from "jsr:@std/path@0.223.0";
+export { toFileUrl } from "jsr:@std/path@0.224.0";
 
 export {
   err,
