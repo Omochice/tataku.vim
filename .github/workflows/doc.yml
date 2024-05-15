@@ -32,8 +32,6 @@ jobs:
               { type: "markdown", in: "README.pod", out: "README.md", },
               { type: "vimdoc", in: "README.pod", out: "doc/${{ steps.normalize.outputs.normalizedName }}.txt", },
             ]
-      - name: Remove deno.lock
-        run: test -f deno.lock && rm deno.lock || true
       - name: Create auto commit
         uses: stefanzweifel/git-auto-commit-action@8621497c8c39c72f3e2a999a26b4ca1b5058a842 # v5.0.1
         if: ${{ steps.branchCheck.outputs.isProtected != true }}
