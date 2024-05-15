@@ -5,25 +5,13 @@ on:
 
 jobs:
   enable-auto-merge:
-    # Enable automerge to merge pull requests from Renovate automatically.
     runs-on: ubuntu-latest
     permissions: {}
     if: |
-      github.event.pull_request.user.login == 'renovate[bot]' && contains(github.event.pull_request.body, ' **Automerge**: Enabled.')
+      ! failure() && ! cancelled() && github.event.pull_request.user.login == 'renovate[bot]' && contains(github.event.pull_request.body, ' **Automerge**: Enabled.')
     steps:
-      - name: Generate token
-        id: generate_token
-        uses: tibdex/github-app-token@b62528385c34dbc9f38e5f4225ac829252d1ea92 # v1.8.0
+      - uses: suzuki-shunsuke/enable-auto-merge-action@fc3173c4dac9254ee191d89f1f8b257bbefc4e31 # main
         with:
-          app_id: ${{secrets.gh_app_id}}
-          private_key: ${{secrets.gh_app_private_key}}
-          repositories: >-
-            ["${{github.event.repository.name}}"]
-          permissions: >-
-            {
-              "contents": "read"
-            }
-      - run: gh -R "$GITHUB_REPOSITORY" pr merge --squash --auto --delete-branch "$PR_NUMBER"
-        env:
-          GITHUB_TOKEN: ${{steps.generate_token.outputs.token}} # Use GitHub App to trigger GitHub Actions Workflow by merge commit.
-          PR_NUMBER: ${{github.event.pull_request.number}}
+          pr_number: ${{github.event.pull_request.number}}
+          merge_method: squash
+          github_token: ${{github.token}}
