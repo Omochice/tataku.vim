@@ -1,8 +1,6 @@
-name: deno ci
+name: Check deno codes
 
-on:
-  - push
-  - pull_request
+on: workflow_call
 
 jobs:
   deno_fmt:
