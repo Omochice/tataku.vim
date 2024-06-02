@@ -16,4 +16,4 @@ export {
   okAsync,
   Result,
   ResultAsync,
-} from "npm:neverthrow@6.2.1";
+} from "npm:neverthrow@6.2.2";
