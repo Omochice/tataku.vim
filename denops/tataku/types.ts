@@ -1,4 +1,4 @@
-import { is, type PredicateType } from "./deps.ts";
+import { is, type PredicateType } from "jsr:@core/unknownutil@3.18.1";
 
 const recipePage = is.ObjectOf({
   name: is.String,

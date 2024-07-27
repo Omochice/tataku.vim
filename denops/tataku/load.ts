@@ -1,15 +1,10 @@
-import {
-  Denops,
-  errAsync,
-  fn,
-  is,
-  join,
-  okAsync,
-  op,
-  ResultAsync,
-  toFileUrl,
-} from "./deps.ts";
-import { Collector, Emitter, Processor } from "./types.ts";
+import type { Denops } from "jsr:@denops/std@7.0.0";
+import { errAsync, okAsync, ResultAsync } from "npm:neverthrow@7.0.0";
+import * as op from "jsr:@denops/std@7.0.0/option";
+import * as fn from "jsr:@denops/std@7.0.0/function";
+import { is } from "jsr:@core/unknownutil@3.18.1";
+import { join, toFileUrl } from "jsr:@std/path@1.0.2";
+import type { Collector, Emitter, Processor } from "./types.ts";
 
 type Kind = "collector" | "processor" | "emitter";
 
