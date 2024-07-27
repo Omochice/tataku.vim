@@ -28,6 +28,7 @@ jobs:
               - .github/workflows/_check-deno.yml
               - ./**/*.ts
               - deno.jsonc
+              - jsr.json
   check-actions:
     needs: path-filter
     if: needs.path-filter.outputs.actions == 'true'
