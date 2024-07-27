@@ -1,0 +1,16 @@
+{
+  "$schema": "https://jsr.io/schema/config-file.v1.json",
+  "name": "@omochice/tataku-vim",
+  "version": "unknown",
+  "exports": "./denops/tataku/export.ts",
+  "publish": {
+    "include": [
+      "README.md",
+      "LICENSE",
+      "denops/**/*.ts"
+    ],
+    "exclude": [
+      "internal"
+    ]
+  }
+}
