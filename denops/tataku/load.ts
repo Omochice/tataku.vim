@@ -1,7 +1,7 @@
 import type { Denops } from "jsr:@denops/std@7.0.0";
 import { errAsync, okAsync, ResultAsync } from "npm:neverthrow@7.0.0";
-import * as op from "jsr:@denops/std@7.0.0/option";
-import * as fn from "jsr:@denops/std@7.0.0/function";
+import { runtimepath } from "jsr:@denops/std@7.0.0/option";
+import { globpath } from "jsr:@denops/std@7.0.0/function";
 import { is } from "jsr:@core/unknownutil@3.18.1";
 import { join, toFileUrl } from "jsr:@std/path@1.0.2";
 import type { Collector, Emitter, Processor } from "./types.ts";
@@ -26,12 +26,12 @@ function search(
     `${query.name}.ts`,
   );
   return ResultAsync.fromPromise(
-    op.runtimepath.getGlobal(denops),
+    runtimepath.getGlobal(denops),
     (cause) => new Error("Failed to get &runtimepath", { cause }),
   )
     .andThen((rtp: unknown) =>
       ResultAsync.fromPromise(
-        fn.globpath(
+        globpath(
           denops,
           rtp,
           expectedPath,
