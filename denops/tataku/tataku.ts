@@ -1,6 +1,12 @@
-import { Denops, err, ok, okAsync, Result, ResultAsync } from "./deps.ts";
-import { Recipe, validate } from "./types.ts";
-import { Collector, Emitter, Processor } from "./types.ts";
+import type { Denops } from "jsr:@denops/std@7.0.0";
+import { err, ok, okAsync, Result, ResultAsync } from "npm:neverthrow@7.0.0";
+import {
+  type Collector,
+  type Emitter,
+  type Processor,
+  type Recipe,
+  validate,
+} from "./types.ts";
 import { loadCollector, loadEmitter, loadProcessor } from "./load.ts";
 
 type Streams = {

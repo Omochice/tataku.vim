@@ -1,4 +1,5 @@
-import { Denops, is } from "../../tataku/deps.ts";
+import type { Denops } from "jsr:@denops/std@7.0.0";
+import { is } from "jsr:@core/unknownutil@3.18.1";
 
 const isOption = is.ObjectOf({
   selected: is.ArrayOf(is.String),

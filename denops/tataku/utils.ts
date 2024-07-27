@@ -1,5 +1,5 @@
-import { Denops } from "./deps.ts";
-import { Kind } from "./types.ts";
+import type { Denops } from "jsr:@denops/std@7.0.0";
+import type { Kind } from "./types.ts";
 
 /**
  * Echo error message with `[tataku]` as prefix
