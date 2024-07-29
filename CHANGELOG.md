@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.1](https://github.com/Omochice/tataku.vim/compare/v1.0.0...v1.0.1) (2024-07-29)
+
+
+### Bug Fixes
+
+* setup deno ([54f4ee3](https://github.com/Omochice/tataku.vim/commit/54f4ee38a359a64fc4a1ec06ae96c7814a15c3df))
+
 ## 1.0.0 (2024-07-29)
 
 
