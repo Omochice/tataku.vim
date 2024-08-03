@@ -1,4 +1,4 @@
-import type { Denops } from "jsr:@denops/std@7.0.2";
+import type { Denops } from "jsr:@denops/std@7.0.3";
 import { is } from "jsr:@core/unknownutil@3.18.1";
 import type { CollectorFactory } from "../../tataku/export.ts";
 
