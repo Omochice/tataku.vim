@@ -1,4 +1,4 @@
-import type { Denops } from "jsr:@denops/std@7.0.2";
+import type { Denops } from "jsr:@denops/std@7.0.3";
 import type { Kind } from "./types.ts";
 
 /**
