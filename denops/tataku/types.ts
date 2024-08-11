@@ -1,8 +1,8 @@
-import { is, type PredicateType } from "jsr:@core/unknownutil@4.0.3";
+import { as, is, type PredicateType } from "jsr:@core/unknownutil@4.0.3";
 
 const recipePage = is.ObjectOf({
   name: is.String,
-  options: is.OptionalOf(is.ObjectOf({})),
+  options: as.Optional(is.ObjectOf({})),
 });
 
 export const validate = is.ObjectOf({
