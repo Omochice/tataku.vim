@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.3](https://github.com/Omochice/tataku.vim/compare/v1.0.2...v1.0.3) (2024-08-11)
+
+
+### Bug Fixes
+
+* revert update neverthrow 7.0.1 ([2db8a93](https://github.com/Omochice/tataku.vim/commit/2db8a931680f4e204f14f4a419225cc9c95e4f59))
+
 ## [1.0.2](https://github.com/Omochice/tataku.vim/compare/v1.0.1...v1.0.2) (2024-07-29)
 
 
