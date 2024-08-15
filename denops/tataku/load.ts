@@ -1,5 +1,5 @@
 import type { Denops } from "jsr:@denops/std@7.0.3";
-import { errAsync, okAsync, ResultAsync } from "npm:neverthrow@7.0.0";
+import { errAsync, okAsync, ResultAsync } from "npm:neverthrow@7.0.1";
 import { runtimepath } from "jsr:@denops/std@7.0.3/option";
 import { globpath } from "jsr:@denops/std@7.0.3/function";
 import { is } from "jsr:@core/unknownutil@4.2.0";
