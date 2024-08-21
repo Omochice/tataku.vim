@@ -54,7 +54,7 @@ jobs:
               { type: "markdown", in: "README.pod", out: "README.md", },
               { type: "vimdoc", in: "README.pod", out: "doc/${{ steps.normalize.outputs.normalizedName }}.txt", },
             ]
-      - uses: denoland/setup-deno@5fae568d37c3b73449009674875529a984555dd1 # 1.3.0
+      - uses: denoland/setup-deno@916edb9a40fd86d1ff57b758807ebe57242f7407 # 1.4.0
       - run: deno fmt README.md
       - uses: DavidAnson/markdownlint-cli2-action@b4c9feab76d8025d1e83c653fa3990936df0e6c8 # v16.0.0
         with:
