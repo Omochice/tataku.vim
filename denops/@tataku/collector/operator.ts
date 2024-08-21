@@ -1,5 +1,5 @@
 import type { Denops } from "jsr:@denops/std@7.0.3";
-import { is } from "jsr:@core/unknownutil@4.2.0";
+import { is } from "jsr:@core/unknownutil@4.2.2";
 import type { CollectorFactory } from "../../tataku/export.ts";
 
 const isOption = is.ObjectOf({
