@@ -1,4 +1,4 @@
-import type { Denops } from "jsr:@denops/std@7.0.3";
+import type { Denops } from "jsr:@denops/std@7.1.1";
 import type { Collector, Emitter, Kind, Processor, Recipe } from "./types.ts";
 
 type Factory<T> = (denops: Denops, options: unknown) => T;
