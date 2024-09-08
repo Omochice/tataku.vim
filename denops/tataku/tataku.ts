@@ -1,5 +1,5 @@
 import type { Denops } from "jsr:@denops/std@7.1.1";
-import { err, ok, okAsync, Result, ResultAsync } from "npm:neverthrow@7.2.0";
+import { err, ok, okAsync, Result, ResultAsync } from "npm:neverthrow@8.0.0";
 import {
   type Collector,
   type Emitter,
