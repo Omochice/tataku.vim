@@ -3,7 +3,7 @@ import { errAsync, okAsync, ResultAsync } from "npm:neverthrow@7.2.0";
 import { runtimepath } from "jsr:@denops/std@7.1.1/option";
 import { globpath } from "jsr:@denops/std@7.1.1/function";
 import { is } from "jsr:@core/unknownutil@4.3.0";
-import { join, toFileUrl } from "jsr:@std/path@1.0.5";
+import { join, toFileUrl } from "jsr:@std/path@1.0.6";
 import type { Collector, Emitter, Processor } from "./types.ts";
 
 type Kind = "collector" | "processor" | "emitter";
