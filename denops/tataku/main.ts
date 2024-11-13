@@ -1,4 +1,4 @@
-import type { Denops } from "jsr:@denops/std@7.3.1";
+import type { Denops } from "jsr:@denops/std@7.3.2";
 import { echoError } from "./utils.ts";
 import { prepareStreams } from "./tataku.ts";
 

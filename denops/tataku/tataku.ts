@@ -1,4 +1,4 @@
-import type { Denops } from "jsr:@denops/std@7.3.1";
+import type { Denops } from "jsr:@denops/std@7.3.2";
 import { err, ok, okAsync, Result, ResultAsync } from "npm:neverthrow@8.1.1";
 import {
   type Collector,
