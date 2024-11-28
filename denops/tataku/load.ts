@@ -1,7 +1,7 @@
-import type { Denops } from "jsr:@denops/std@7.3.2";
+import type { Denops } from "jsr:@denops/std@7.4.0";
 import { errAsync, okAsync, ResultAsync } from "npm:neverthrow@8.1.1";
-import { runtimepath } from "jsr:@denops/std@7.3.2/option";
-import { globpath } from "jsr:@denops/std@7.3.2/function";
+import { runtimepath } from "jsr:@denops/std@7.4.0/option";
+import { globpath } from "jsr:@denops/std@7.4.0/function";
 import { is } from "jsr:@core/unknownutil@4.3.0";
 import { join, toFileUrl } from "jsr:@std/path@1.0.8";
 import type { Collector, Emitter, Processor } from "./types.ts";
