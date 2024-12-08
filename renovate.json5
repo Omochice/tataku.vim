@@ -3,6 +3,6 @@
   extends: [
     "github>Omochice/personal-renovate-config",
     "github>Omochice/renovate-config:deno",
-    "github>aquaproj/aqua-renovate-config#2.5.0",
+    "github>aquaproj/aqua-renovate-config#2.6.0",
   ],
 }
