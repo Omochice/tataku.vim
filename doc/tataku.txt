@@ -1,4 +1,4 @@
-*tataku.vim.txt*                              The plugin that define protocol
+*tataku.vim.txt*                             The plugin that define protocols
 =============================================================================
 tataku.vim ~
                                                                  *tataku.vim*
@@ -111,7 +111,7 @@ When call recipe, tataku.vim import module from
 &runtimepath.
 
 The module must export function as default.
-The function must return correspoinding stream:
+The function must return corresponding stream:
 
 - Collector: `ReadableStream<string[]>`
 - Processor: `TransformStream<string[]>`

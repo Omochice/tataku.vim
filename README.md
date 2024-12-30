@@ -96,7 +96,7 @@ When call recipe, tataku.vim import module from
 `denops/@tataku/<module-type>/<module-name>.ts` within &runtimepath.
 
 The module must export function as default. The function must return
-correspoinding stream:
+corresponding stream:
 
 - Collector: `ReadableStream<string[]>`
 - Processor: `TransformStream<string[]>`
