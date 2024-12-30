@@ -1,6 +1,6 @@
 ---
 name: tataku.vim
-description: The plugin that define protocol
+description: The plugin that define protocols
 ---
 
 =pod
