@@ -16,8 +16,8 @@ type Streams = {
 };
 
 class CombinedProcessorStream extends TransformStream<string[]> {
-  readable: ReadableStream<string[]>;
-  writable: WritableStream<string[]>;
+  override readable: ReadableStream<string[]>;
+  override writable: WritableStream<string[]>;
   constructor(streams: Processor[]) {
     super();
     if (streams.length === 0) {
