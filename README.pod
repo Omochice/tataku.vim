@@ -142,7 +142,7 @@ C<denops/@tataku/E<lt>module-typeE<gt>/E<lt>module-nameE<gt>.ts> within
 &runtimepath.
 
 The module must export function as default.
-The function must return correspoinding stream:
+The function must return corresponding stream:
 
 =over 0
 

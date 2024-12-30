@@ -26,7 +26,7 @@ export async function handleError(
   if (error instanceof Error) {
     await echoError(
       denops,
-      `Error occured in ${kind}-${name}: ${error.message}`,
+      `Error occurred in ${kind}-${name}: ${error.message}`,
     );
   } else {
     await echoError(
