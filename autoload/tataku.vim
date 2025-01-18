@@ -20,11 +20,11 @@ function! tataku#_operator(recipe_name) abort
       return 'g@'
     endif
 
-    let l:tmp = @@
-    let l:v = s:visual_command_from_wise_name(a:000[0])
-    execute 'silent!' 'normal!' '`[' .. v .. '`]"@y'
-    let l:selected = split(@@, '\n')
-    let @@ = l:tmp
+    let l:selected = getregion(
+      \ getpos("'["),
+      \ getpos("']"),
+      \ #{ type: s:visual_command_from_wise_name(a:000[0]) }
+      \ )
 
     let l:recipe = s:get_recipe(s:recipe_name)
     if empty(l:recipe)
