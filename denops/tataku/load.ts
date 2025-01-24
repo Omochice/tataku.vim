@@ -13,7 +13,7 @@ type Query = {
   name: string;
 };
 
-type Factory<T> = (denops: Denops, options: unknown) => T;
+type Factory<T> = (denops: Denops, options: unknown) => T | Promise<T>;
 
 function search(
   denops: Denops,
