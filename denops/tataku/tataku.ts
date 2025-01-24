@@ -8,6 +8,7 @@ import {
   validate,
 } from "./types.ts";
 import { loadCollector, loadEmitter, loadProcessor } from "./load.ts";
+import { convertError } from "./utils.ts";
 
 type Streams = {
   collector: Collector;
@@ -42,19 +43,29 @@ export function prepareStreams(
       ResultAsync.combine([
         loadCollector(denops, recipe.collector.name)
           .andThen((factory) =>
-            okAsync(factory(denops, recipe.collector.options ?? {}))
+            ResultAsync.fromPromise(
+              Promise.resolve(factory(denops, recipe.collector.options ?? {})),
+              convertError("Failed to load collector"),
+            )
           ),
         ResultAsync.combine(
           recipe.processor.map((page) =>
             loadProcessor(denops, page.name)
               .andThen((factory) =>
-                okAsync(factory(denops, page.options ?? {}))
+                ResultAsync.fromPromise(
+                  Promise.resolve(factory(denops, page.options ?? {})),
+                  convertError("Failed to load processor"),
+                )
               )
           ),
-        ).andThen((streams) => okAsync(new CombinedProcessorStream(streams))),
+        )
+          .andThen((streams) => okAsync(new CombinedProcessorStream(streams))),
         loadEmitter(denops, recipe.emitter.name)
           .andThen((factory) =>
-            okAsync(factory(denops, recipe.emitter.options ?? {}))
+            ResultAsync.fromPromise(
+              Promise.resolve(factory(denops, recipe.emitter.options ?? {})),
+              convertError("Failed to load emitter"),
+            )
           ),
       ])
     )
