@@ -13,7 +13,7 @@ type Query = {
   name: string;
 };
 
-type Factory<T> = (denops: Denops, options: unknown) => T;
+type Factory<T> = (denops: Denops, options: unknown) => T | Promise<T>;
 
 function search(
   denops: Denops,
@@ -91,7 +91,7 @@ export function loadProcessor(
     .andThen((path) => {
       return ResultAsync.fromPromise(
         import(path.href).then((e) => e.default),
-        (cause) => new Error(`Failed to processor-${name}`, { cause }),
+        (cause) => new Error(`Failed to load processor-${name}`, { cause }),
       );
     })
     .andThen((factory: unknown) => {
@@ -110,7 +110,7 @@ export function loadEmitter(
     .andThen((path) => {
       return ResultAsync.fromPromise(
         import(path.href).then((e) => e.default),
-        (cause) => new Error(`Failed to emitter-${name}`, { cause }),
+        (cause) => new Error(`Failed to load emitter-${name}`, { cause }),
       );
     })
     .andThen((factory: unknown) => {
