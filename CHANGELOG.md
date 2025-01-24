@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0](https://github.com/Omochice/tataku.vim/compare/v1.0.3...v1.1.0) (2025-01-24)
+
+
+### Features
+
+* accept awaitable factory ([#377](https://github.com/Omochice/tataku.vim/issues/377)) ([c14ee3c](https://github.com/Omochice/tataku.vim/commit/c14ee3cd85eb2fd7ec3805955d640cc88fed18e6))
+
 ## [1.0.3](https://github.com/Omochice/tataku.vim/compare/v1.0.2...v1.0.3) (2024-08-11)
 
 
