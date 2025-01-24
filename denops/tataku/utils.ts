@@ -35,3 +35,19 @@ export async function handleError(
     );
   }
 }
+
+/**
+ * Convert some value to Error
+ *
+ * @param cause Some error thing
+ * @param message The message of error if using cause is not Error
+ * @returns Converted error
+ */
+export function convertError(message = "Failed"): (e: unknown) => Error {
+  return (cause) => {
+    if (cause instanceof Error) {
+      return cause;
+    }
+    return new Error(message, { cause });
+  };
+}
