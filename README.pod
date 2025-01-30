@@ -60,7 +60,7 @@ Recipe must have three parts.
 
 =back
 
-Recipe must be below format:
+Recipe must be below format: X<tataku-recipe-format>
 
 =begin vim
 
@@ -98,6 +98,13 @@ Each module have two keys.
 =item * C<tataku#call_recipe(recipe_name)> X<tataku#call_recipe>
 
 	Call recipe which registered in L<g:tataku_recipes>.
+
+=back
+
+=item * C<tataku#call_oneshot(recipe)> X<tataku#call_oneshot>
+
+  Call with L<recipe object|tataku-recipe-format>.
+  Convenient to call tataku with a dynamic recipe.
 
 =back
 
