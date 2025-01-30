@@ -6,8 +6,12 @@ function! tataku#call_recipe(recipe_name) abort
   if empty(l:recipe)
     return
   endif
+  call tataku#call_oneshot(l:recipe)
+endfunction
+
+function! tataku#call_oneshot(recipe) abort
   call denops#plugin#wait('tataku')
-  call denops#notify('tataku', 'run', [l:recipe])
+  call denops#notify('tataku', 'run', [a:recipe])
 endfunction
 
 " operator{{{
