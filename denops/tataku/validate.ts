@@ -3,7 +3,7 @@ import type { Recipe, RecipePage } from "./types.ts";
 
 const recipePage = is.ObjectOf({
   name: is.String,
-  options: as.Optional(is.ObjectOf({})),
+  options: as.Optional(is.Record),
 }) satisfies Predicate<RecipePage>;
 
 export const validate = is.ObjectOf({
