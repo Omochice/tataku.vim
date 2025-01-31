@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0](https://github.com/Omochice/tataku.vim/compare/v1.1.0...v1.2.0) (2025-01-31)
+
+
+### Features
+
+* add function to call oneshot recipe ([4f50765](https://github.com/Omochice/tataku.vim/commit/4f507654a5565a3c9f9880ce990119c68c89d294))
+
 ## [1.1.0](https://github.com/Omochice/tataku.vim/compare/v1.0.3...v1.1.0) (2025-01-24)
 
 
