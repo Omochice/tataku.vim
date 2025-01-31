@@ -99,12 +99,10 @@ Each module have two keys.
 
 	Call recipe which registered in L<g:tataku_recipes>.
 
-=back
-
 =item * C<tataku#call_oneshot(recipe)> X<tataku#call_oneshot>
 
-  Call with L<recipe object|tataku-recipe-format>.
-  Convenient to call tataku with a dynamic recipe.
+	Call with L<recipe object|tataku-recipe-format>.
+	Convenient to call tataku with a dynamic recipe.
 
 =back
 
@@ -120,7 +118,7 @@ Each module have two keys.
 =item * L<C<g:tataku_enable_operator>> X<g:tataku_enable_operator>
 
 	Enable operator mappings starts with C<E<lt>PlugE<gt>(operator-tataku->.
-  For details: L<tataku-operator>
+	For details: L<tataku-operator>
 	Default: C<v:false>
 
 
