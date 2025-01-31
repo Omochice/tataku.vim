@@ -43,7 +43,7 @@ Recipe must have three parts.
 
   `Emitter` output strings to some resources.
 
-Recipe must be below format:
+Recipe must be below format: *tataku-recipe-format*
 
 >
 	{
@@ -72,6 +72,10 @@ Function ~
 - `tataku#call_recipe(recipe_name)` *tataku#call_recipe*
 
 	Call recipe which registered in |g:tataku_recipes|.
+- `tataku#call_oneshot(recipe)` *tataku#call_oneshot*
+
+	Call with recipe object |tataku-recipe-format|.
+	Convenient to call tataku with a dynamic recipe.
 
 Variables ~
                                                            *tataku-variables*
@@ -83,7 +87,7 @@ Variables ~
 - |`g:tataku_enable_operator`| *g:tataku_enable_operator*
 
 	Enable operator mappings starts with `<Plug>(operator-tataku-`.
-  For details: |tataku-operator|
+	For details: |tataku-operator|
 	Default: `v:false`
 
 Operator ~
