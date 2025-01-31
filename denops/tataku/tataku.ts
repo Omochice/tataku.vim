@@ -1,12 +1,7 @@
 import type { Denops } from "jsr:@denops/std@7.4.0";
 import { err, ok, okAsync, Result, ResultAsync } from "npm:neverthrow@8.1.1";
-import {
-  type Collector,
-  type Emitter,
-  type Processor,
-  type Recipe,
-  validate,
-} from "./types.ts";
+import type { Collector, Emitter, Processor, Recipe } from "./types.ts";
+import { validate } from "./validate.ts";
 import { loadCollector, loadEmitter, loadProcessor } from "./load.ts";
 import { convertError } from "./utils.ts";
 

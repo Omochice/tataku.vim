@@ -33,5 +33,5 @@ jobs:
       - uses: denoland/setup-deno@909cc5acb0fdd60627fb858598759246509fa755 # v2.0.2
         if: ${{ steps.release.outputs.release_created }}
       - name: Upload Release Artifact
-        run: deno publish --config jsr.json --allow-slow-types
+        run: deno publish --config jsr.json
         if: ${{ steps.release.outputs.release_created }}
