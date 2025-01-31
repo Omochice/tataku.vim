@@ -5,8 +5,8 @@ import {
   type Emitter,
   type Processor,
   type Recipe,
-  validate,
 } from "./types.ts";
+import { validate } from "./validate.ts";
 import { loadCollector, loadEmitter, loadProcessor } from "./load.ts";
 import { convertError } from "./utils.ts";
 

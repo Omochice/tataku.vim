@@ -1,17 +1,13 @@
-import { as, is, type PredicateType } from "jsr:@core/unknownutil@4.3.0";
+export type RecipePage = {
+  name: string;
+  options?: Record<string, unknown> | undefined;
+};
 
-const recipePage = is.ObjectOf({
-  name: is.String,
-  options: as.Optional(is.ObjectOf({})),
-});
-
-export const validate = is.ObjectOf({
-  collector: recipePage,
-  processor: is.ArrayOf(recipePage),
-  emitter: recipePage,
-});
-
-export type Recipe = PredicateType<typeof validate>;
+export type Recipe = {
+  collector: RecipePage;
+  processor: RecipePage[];
+  emitter: RecipePage;
+};
 
 export type Kind = "collector" | "processor" | "emitter";
 
