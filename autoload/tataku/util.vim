@@ -2,12 +2,12 @@ let s:save_cpo = &cpo
 set cpo&vim
 
 function! tataku#util#echo_error(msg) abort
-  let g:_tataku_internal_error_message = printf('[tataku] %s', type(a:msg) ==# v:t_string ? a:msg : string(a:msg))
+  const l:error_message = printf('[tataku] %s', type(a:msg) ==# v:t_string ? a:msg : string(a:msg))
   if has('nvim')
-    lua vim.notify(vim.g._tataku_internal_error_message, vim.log.levels.ERROR)
+    call luaeval('vim.notify(_A, vim.log.levels.ERROR)', l:error_message)
   else
     echohl ErrorMsg
-    echomsg g:_tataku_internal_error_message
+    echomsg l:error_message
     echohl None
   endif
 endfunction
