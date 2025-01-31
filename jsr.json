@@ -7,7 +7,8 @@
     "include": [
       "README.md",
       "LICENSE",
-      "denops/**/*.ts"
+      "denops/tataku/export.ts",
+      "denops/tataku/types.ts"
     ],
     "exclude": [
       "internal"
