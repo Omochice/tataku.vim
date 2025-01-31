@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.1](https://github.com/Omochice/tataku.vim/compare/v1.2.0...v1.2.1) (2025-01-31)
+
+
+### Bug Fixes
+
+* delete overlapped definition ([c1304a1](https://github.com/Omochice/tataku.vim/commit/c1304a1365a2088b3d889c5065d0e0b4d4b18641))
+
 ## [1.2.0](https://github.com/Omochice/tataku.vim/compare/v1.1.0...v1.2.0) (2025-01-31)
 
 
