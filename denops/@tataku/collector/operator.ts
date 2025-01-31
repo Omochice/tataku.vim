@@ -15,6 +15,7 @@ const collector: CollectorFactory = (_: Denops, options: unknown) => {
   return new ReadableStream<string[]>({
     start: (controller) => {
       controller.enqueue(options.selected);
+      controller.close();
     },
   });
 };
