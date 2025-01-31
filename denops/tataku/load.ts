@@ -5,6 +5,7 @@ import { globpath } from "jsr:@denops/std@7.4.0/function";
 import { is } from "jsr:@core/unknownutil@4.3.0";
 import { join, toFileUrl } from "jsr:@std/path@1.0.8";
 import type { Collector, Emitter, Processor } from "./types.ts";
+import type { Factory } from "./export.ts";
 
 type Kind = "collector" | "processor" | "emitter";
 
@@ -12,8 +13,6 @@ type Query = {
   kind: Kind;
   name: string;
 };
-
-type Factory<T> = (denops: Denops, options: unknown) => T | Promise<T>;
 
 function search(
   denops: Denops,
