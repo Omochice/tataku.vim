@@ -23,7 +23,7 @@ export async function handleError(
   name: string,
   error: unknown,
 ): Promise<void> {
-  if (error instanceof Error) {
+  if (Error.isError(error)) {
     await echoError(
       denops,
       `Error occurred in ${kind}-${name}: ${error.message}`,
@@ -45,7 +45,7 @@ export async function handleError(
  */
 export function convertError(message = "Failed"): (e: unknown) => Error {
   return (cause) => {
-    if (cause instanceof Error) {
+    if (Error.isError(cause)) {
       return cause;
     }
     return new Error(message, { cause });
