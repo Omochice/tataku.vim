@@ -25,7 +25,7 @@ jobs:
       - uses: aquaproj/aqua-installer@5e54e5cee8a95ee2ce7c04cb993da6dfad13e59c # v3.1.2
         if: steps.filter.outputs.actions == 'true'
         with:
-          aqua_version: v2.46.0
+          aqua_version: v2.51.1
       - name: Linting
         if: steps.filter.outputs.actions == 'true'
         run: |
