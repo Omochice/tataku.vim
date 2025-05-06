@@ -69,6 +69,8 @@ jobs:
         with:
           app-id: ${{ secrets.PODENO_APP_ID }}
           private-key: ${{ secrets.PODENO_PRIVATE_KEY }}
+          permission-content: write
+          permission-pull-requests: write
       - name: Create auto commit
         if: ${{ steps.branch-check.outputs.isProtected == 'false' }}
         uses: stefanzweifel/git-auto-commit-action@e348103e9026cc0eee72ae06630dbe30c8bf7a79 # v5.1.0
