@@ -12,4 +12,4 @@ registries:
 packages:
 - name: rhysd/actionlint@v1.7.7
 - name: suzuki-shunsuke/pinact@v3.3.1
-- name: suzuki-shunsuke/ghalint@v1.5.1
+- name: suzuki-shunsuke/ghalint@v1.5.2
