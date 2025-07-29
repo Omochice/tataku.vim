@@ -33,6 +33,7 @@
           { ... }:
           {
             settings.global.excludes = [
+              ".github/*.json"
               "CHANGELOG.md"
               "README.md"
             ];
