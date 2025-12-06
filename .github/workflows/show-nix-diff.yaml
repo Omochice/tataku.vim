@@ -8,7 +8,7 @@ on:
 
 jobs:
   comment-nix-diff:
-    uses: Omochice/shared-action/.github/workflows/show-nix-diff.yaml@c290abfa67160af9f95a58596254619ddd4d6342 # v1.0.0
+    uses: Omochice/shared-actions/.github/workflows/show-nix-diff.yaml@c290abfa67160af9f95a58596254619ddd4d6342 # v1.0.0
     permissions:
       pull-requests: write
     with:
