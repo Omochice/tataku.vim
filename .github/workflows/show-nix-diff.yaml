@@ -1,0 +1,17 @@
+name: Comment devshell differences
+
+on:
+  pull_request:
+    paths:
+      - flake.nix
+      - flake.lock
+
+jobs:
+  comment-nix-diff:
+    uses: Omochice/shared-action/.github/workflows/show-nix-diff.yaml@c290abfa67160af9f95a58596254619ddd4d6342 # v1.0.0
+    permissions:
+      pull-requests: write
+    with:
+      attribute: devShells.x86_64-linux.default
+    secrets:
+      token: ${{ secrets.GITHUB_TOKEN }}
