@@ -1,5 +1,5 @@
 {
-  description = "The plugin that define protocol between collector-processor, processor-processor, processor-emitter.";
+  description = "The plugin that defines protocol between collector-processor, processor-processor, processor-emitter.";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
