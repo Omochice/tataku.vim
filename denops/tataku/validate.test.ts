@@ -21,13 +21,13 @@ describe("validate", () => {
     assertEquals(validate(recipe), true);
   });
 
-  it("returns true when processor is an empty array", () => {
+  it("returns false when processor is an empty array", () => {
     const recipe = {
       collector: { name: "c" },
       processor: [],
       emitter: { name: "e" },
     };
-    assertEquals(validate(recipe), true);
+    assertEquals(validate(recipe), false);
   });
 
   it("returns false for null", () => {
