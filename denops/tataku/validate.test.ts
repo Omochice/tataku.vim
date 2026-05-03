@@ -1,5 +1,5 @@
 import { describe, it } from "jsr:@std/testing@1.0.13/bdd";
-import { assertEquals } from "jsr:@std/assert@1.0.13";
+import { expect } from "jsr:@std/expect@1.0.17";
 import { validate } from "./validate.ts";
 
 describe("validate", () => {
@@ -9,7 +9,7 @@ describe("validate", () => {
       processor: [{ name: "p" }],
       emitter: { name: "e" },
     };
-    assertEquals(validate(recipe), true);
+    expect(validate(recipe)).toEqual(true);
   });
 
   it("returns true when options are present on every page", () => {
@@ -18,7 +18,7 @@ describe("validate", () => {
       processor: [{ name: "p", options: { b: 2 } }],
       emitter: { name: "e", options: { c: 3 } },
     };
-    assertEquals(validate(recipe), true);
+    expect(validate(recipe)).toEqual(true);
   });
 
   it("returns false when processor is an empty array", () => {
@@ -27,17 +27,17 @@ describe("validate", () => {
       processor: [],
       emitter: { name: "e" },
     };
-    assertEquals(validate(recipe), false);
+    expect(validate(recipe)).toEqual(false);
   });
 
   it("returns false for null", () => {
-    assertEquals(validate(null), false);
+    expect(validate(null)).toEqual(false);
   });
 
   it("returns false for non-object values", () => {
-    assertEquals(validate("recipe"), false);
-    assertEquals(validate(42), false);
-    assertEquals(validate(undefined), false);
+    expect(validate("recipe")).toEqual(false);
+    expect(validate(42)).toEqual(false);
+    expect(validate(undefined)).toEqual(false);
   });
 
   it("returns false when collector is missing", () => {
@@ -45,7 +45,7 @@ describe("validate", () => {
       processor: [{ name: "p" }],
       emitter: { name: "e" },
     };
-    assertEquals(validate(recipe), false);
+    expect(validate(recipe)).toEqual(false);
   });
 
   it("returns false when processor is missing", () => {
@@ -53,7 +53,7 @@ describe("validate", () => {
       collector: { name: "c" },
       emitter: { name: "e" },
     };
-    assertEquals(validate(recipe), false);
+    expect(validate(recipe)).toEqual(false);
   });
 
   it("returns false when emitter is missing", () => {
@@ -61,7 +61,7 @@ describe("validate", () => {
       collector: { name: "c" },
       processor: [{ name: "p" }],
     };
-    assertEquals(validate(recipe), false);
+    expect(validate(recipe)).toEqual(false);
   });
 
   it("returns false when collector.name is not a string", () => {
@@ -70,7 +70,7 @@ describe("validate", () => {
       processor: [{ name: "p" }],
       emitter: { name: "e" },
     };
-    assertEquals(validate(recipe), false);
+    expect(validate(recipe)).toEqual(false);
   });
 
   it("returns false when collector.options is not a record", () => {
@@ -79,7 +79,7 @@ describe("validate", () => {
       processor: [{ name: "p" }],
       emitter: { name: "e" },
     };
-    assertEquals(validate(recipe), false);
+    expect(validate(recipe)).toEqual(false);
   });
 
   it("returns false when processor is not an array", () => {
@@ -88,7 +88,7 @@ describe("validate", () => {
       processor: { name: "p" },
       emitter: { name: "e" },
     };
-    assertEquals(validate(recipe), false);
+    expect(validate(recipe)).toEqual(false);
   });
 
   it("returns false when a processor item lacks name", () => {
@@ -97,7 +97,7 @@ describe("validate", () => {
       processor: [{ options: {} }],
       emitter: { name: "e" },
     };
-    assertEquals(validate(recipe), false);
+    expect(validate(recipe)).toEqual(false);
   });
 
   it("returns false when emitter.name is not a string", () => {
@@ -106,6 +106,6 @@ describe("validate", () => {
       processor: [{ name: "p" }],
       emitter: { name: 42 },
     };
-    assertEquals(validate(recipe), false);
+    expect(validate(recipe)).toEqual(false);
   });
 });
