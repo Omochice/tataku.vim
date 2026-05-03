@@ -1,11 +1,9 @@
-type EmitterDenops = { cmd(cmd: string): Promise<void> };
+import type { Denops } from "jsr:@denops/std@8.2.0";
+import { globals } from "jsr:@denops/std@8.2.0/variable";
 
-export default (denops: EmitterDenops): WritableStream<string[]> =>
+export default (denops: Denops): WritableStream<string[]> =>
   new WritableStream<string[]>({
     async write(chunk) {
-      const literal = "[" +
-        chunk.map((s) => "'" + s.replace(/'/g, "''") + "'").join(",") +
-        "]";
-      await denops.cmd("let g:tataku_test_output = " + literal);
+      await globals.set(denops, "tataku_test_output", chunk);
     },
   });
