@@ -45,7 +45,10 @@ test({
   fn: async (denops) => {
     const result = await loadCollector(denops, "missing_c");
     assertEquals(result.isErr(), true);
-    assertStringIncludes(result._unsafeUnwrapErr().message, "is not found in rtp");
+    assertStringIncludes(
+      result._unsafeUnwrapErr().message,
+      "is not found in rtp",
+    );
   },
 });
 
@@ -112,7 +115,10 @@ test({
   fn: async (denops) => {
     const result = await loadProcessor(denops, "missing_p");
     assertEquals(result.isErr(), true);
-    assertStringIncludes(result._unsafeUnwrapErr().message, "is not found in rtp");
+    assertStringIncludes(
+      result._unsafeUnwrapErr().message,
+      "is not found in rtp",
+    );
   },
 });
 
@@ -179,7 +185,10 @@ test({
   fn: async (denops) => {
     const result = await loadEmitter(denops, "missing_e");
     assertEquals(result.isErr(), true);
-    assertStringIncludes(result._unsafeUnwrapErr().message, "is not found in rtp");
+    assertStringIncludes(
+      result._unsafeUnwrapErr().message,
+      "is not found in rtp",
+    );
   },
 });
 
