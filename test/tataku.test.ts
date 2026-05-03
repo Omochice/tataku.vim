@@ -50,13 +50,29 @@ test({
   mode: "all",
   name: "prepareStreams returns err when collector module is not found",
   fn: async (denops) => {
-    const recipe = {
-      collector: { name: "ps_missing_c" },
-      processor: [{ name: "ps_missing_p" }],
-      emitter: { name: "ps_missing_e" },
-    };
-    const result = await prepareStreams(denops, recipe);
-    assertEquals(result.isErr(), true);
+    const root = await Deno.makeTempDir();
+    try {
+      await Promise.all([
+        copyFixture(
+          "processor/passthrough.ts",
+          root,
+          "processor",
+          "ps_missing_p",
+        ),
+        copyFixture("emitter/empty.ts", root, "emitter", "ps_missing_e"),
+      ]);
+      await addRuntimepath(denops, root);
+
+      const recipe = {
+        collector: { name: "ps_missing_c" },
+        processor: [{ name: "ps_missing_p" }],
+        emitter: { name: "ps_missing_e" },
+      };
+      const result = await prepareStreams(denops, recipe);
+      assertEquals(result.isErr(), true);
+    } finally {
+      await Deno.remove(root, { recursive: true });
+    }
   },
 });
 
