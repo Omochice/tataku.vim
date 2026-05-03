@@ -1,6 +1,7 @@
 import { assertEquals, assertStringIncludes } from "jsr:@std/assert@1.0.13";
 import { test } from "jsr:@denops/test@4.0.0";
 import { join } from "jsr:@std/path@1.1.4";
+import { globals } from "jsr:@denops/std@8.2.0/variable";
 import { main } from "../denops/tataku/main.ts";
 import { addRuntimepath, copyFixture, waitFor } from "./_helpers.ts";
 
@@ -37,13 +38,10 @@ test({
       };
       await denops.dispatcher.run(recipe);
 
-      await waitFor(async () => {
-        const v = await denops.eval(
-          "exists('g:tataku_test_output') ? 1 : 0",
-        ) as number;
-        return v === 1;
-      });
-      const observed = await denops.eval("g:tataku_test_output");
+      await waitFor(async () =>
+        (await globals.get(denops, "tataku_test_output", null)) !== null
+      );
+      const observed = await globals.get(denops, "tataku_test_output");
       assertEquals(observed, ["hello", "world"]);
     } finally {
       await Deno.remove(root, { recursive: true });
@@ -72,13 +70,15 @@ test({
       await main(denops);
 
       await denops.dispatcher.run({ foo: "bar" });
-      await waitFor(async () => {
-        const v = await denops.eval(
-          "get(g:, 'tataku_test_error', '')",
-        ) as string;
-        return v.length > 0;
-      });
-      const observed = await denops.eval("g:tataku_test_error") as string;
+      await waitFor(async () =>
+        (await globals.get(denops, "tataku_test_error", "")).length >
+          0
+      );
+      const observed = await globals.get(
+        denops,
+        "tataku_test_error",
+        "",
+      );
       assertStringIncludes(observed, "The recipe is invalid format");
     } finally {
       await Deno.remove(root, { recursive: true });
