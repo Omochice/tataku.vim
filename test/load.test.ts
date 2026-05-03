@@ -5,27 +5,7 @@ import {
   loadEmitter,
   loadProcessor,
 } from "../denops/tataku/load.ts";
-import { addRuntimepath, writeFixture } from "./_helpers.ts";
-
-const collectorSource = `
-export default () =>
-  new ReadableStream({
-    start(controller) {
-      controller.enqueue(["hello"]);
-      controller.close();
-    },
-  });
-`;
-
-const processorSource = `
-export default () => new TransformStream();
-`;
-
-const emitterSource = `
-export default () => new WritableStream();
-`;
-
-const notFunctionSource = `export default 42;`;
+import { addRuntimepath, copyFixture } from "./_helpers.ts";
 
 test({
   mode: "all",
@@ -33,7 +13,7 @@ test({
   fn: async (denops) => {
     const root = await Deno.makeTempDir();
     try {
-      await writeFixture(root, "collector", "found_c", collectorSource);
+      await copyFixture("collector/simple.ts", root, "collector", "found_c");
       await addRuntimepath(denops, root);
       const result = await loadCollector(denops, "found_c");
       assertEquals(result.isOk(), true);
@@ -63,8 +43,8 @@ test({
     const a = await Deno.makeTempDir();
     const b = await Deno.makeTempDir();
     try {
-      await writeFixture(a, "collector", "dup_c", collectorSource);
-      await writeFixture(b, "collector", "dup_c", collectorSource);
+      await copyFixture("collector/simple.ts", a, "collector", "dup_c");
+      await copyFixture("collector/simple.ts", b, "collector", "dup_c");
       await addRuntimepath(denops, a);
       await addRuntimepath(denops, b);
       const result = await loadCollector(denops, "dup_c");
@@ -83,7 +63,7 @@ test({
   fn: async (denops) => {
     const root = await Deno.makeTempDir();
     try {
-      await writeFixture(root, "collector", "bad_c", notFunctionSource);
+      await copyFixture("not_function.ts", root, "collector", "bad_c");
       await addRuntimepath(denops, root);
       const result = await loadCollector(denops, "bad_c");
       assertEquals(result.isErr(), true);
@@ -103,7 +83,12 @@ test({
   fn: async (denops) => {
     const root = await Deno.makeTempDir();
     try {
-      await writeFixture(root, "processor", "found_p", processorSource);
+      await copyFixture(
+        "processor/passthrough.ts",
+        root,
+        "processor",
+        "found_p",
+      );
       await addRuntimepath(denops, root);
       const result = await loadProcessor(denops, "found_p");
       assertEquals(result.isOk(), true);
@@ -133,8 +118,8 @@ test({
     const a = await Deno.makeTempDir();
     const b = await Deno.makeTempDir();
     try {
-      await writeFixture(a, "processor", "dup_p", processorSource);
-      await writeFixture(b, "processor", "dup_p", processorSource);
+      await copyFixture("processor/passthrough.ts", a, "processor", "dup_p");
+      await copyFixture("processor/passthrough.ts", b, "processor", "dup_p");
       await addRuntimepath(denops, a);
       await addRuntimepath(denops, b);
       const result = await loadProcessor(denops, "dup_p");
@@ -153,7 +138,7 @@ test({
   fn: async (denops) => {
     const root = await Deno.makeTempDir();
     try {
-      await writeFixture(root, "processor", "bad_p", notFunctionSource);
+      await copyFixture("not_function.ts", root, "processor", "bad_p");
       await addRuntimepath(denops, root);
       const result = await loadProcessor(denops, "bad_p");
       assertEquals(result.isErr(), true);
@@ -173,7 +158,7 @@ test({
   fn: async (denops) => {
     const root = await Deno.makeTempDir();
     try {
-      await writeFixture(root, "emitter", "found_e", emitterSource);
+      await copyFixture("emitter/empty.ts", root, "emitter", "found_e");
       await addRuntimepath(denops, root);
       const result = await loadEmitter(denops, "found_e");
       assertEquals(result.isOk(), true);
@@ -203,8 +188,8 @@ test({
     const a = await Deno.makeTempDir();
     const b = await Deno.makeTempDir();
     try {
-      await writeFixture(a, "emitter", "dup_e", emitterSource);
-      await writeFixture(b, "emitter", "dup_e", emitterSource);
+      await copyFixture("emitter/empty.ts", a, "emitter", "dup_e");
+      await copyFixture("emitter/empty.ts", b, "emitter", "dup_e");
       await addRuntimepath(denops, a);
       await addRuntimepath(denops, b);
       const result = await loadEmitter(denops, "dup_e");
@@ -223,7 +208,7 @@ test({
   fn: async (denops) => {
     const root = await Deno.makeTempDir();
     try {
-      await writeFixture(root, "emitter", "bad_e", notFunctionSource);
+      await copyFixture("not_function.ts", root, "emitter", "bad_e");
       await addRuntimepath(denops, root);
       const result = await loadEmitter(denops, "bad_e");
       assertEquals(result.isErr(), true);
