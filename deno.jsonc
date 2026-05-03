@@ -1,9 +1,11 @@
 {
   "tasks": {
+    "check": "deno check ./**/*.ts",
     "fmt": "deno fmt ./**/*.ts",
     "fmt:check": "deno fmt --check ./**/*.ts",
-    "check": "deno check ./**/*.ts",
-    "lint": "deno lint ./**/*.ts"
+    "lint": "deno lint ./**/*.ts",
+    "test:integration": "deno test --allow-all denops/**/*.integration.test.ts",
+    "test:unit": "deno test --allow-env --allow-read"
   },
   "lock": false,
   "fmt": {
@@ -15,5 +17,8 @@
         "no-import-prefix"
       ]
     }
+  },
+  "test": {
+    "exclude": ["denops/**/*.integration.test.ts"]
   }
 }
