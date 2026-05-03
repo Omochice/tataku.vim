@@ -6,24 +6,6 @@ const FIXTURES_DIR = fromFileUrl(import.meta.resolve("./fixtures"));
 export type Kind = "collector" | "processor" | "emitter";
 
 /**
- * Write a fixture module under `{rtpRoot}/denops/@tataku/{kind}/{name}.ts`.
- *
- * @returns Absolute path of the written file.
- */
-export async function writeFixture(
-  rtpRoot: string,
-  kind: Kind,
-  name: string,
-  source: string,
-): Promise<string> {
-  const dir = join(rtpRoot, "denops", "@tataku", kind);
-  await Deno.mkdir(dir, { recursive: true });
-  const file = join(dir, `${name}.ts`);
-  await Deno.writeTextFile(file, source);
-  return file;
-}
-
-/**
  * Copy a file from `test/fixtures/{fixtureRelPath}` into
  * `{rtpRoot}/denops/@tataku/{kind}/{name}.ts`.
  *
