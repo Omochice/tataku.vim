@@ -2,34 +2,7 @@ import { assertEquals, assertStringIncludes } from "jsr:@std/assert@1.0.13";
 import { test } from "jsr:@denops/test@4.0.0";
 import { join } from "jsr:@std/path@1.1.4";
 import { main } from "../denops/tataku/main.ts";
-import { addRuntimepath, waitFor, writeFixture } from "./_helpers.ts";
-
-const collectorSource = `
-export default () =>
-  new ReadableStream({
-    start(controller) {
-      controller.enqueue(["hello", "world"]);
-      controller.close();
-    },
-  });
-`;
-
-const processorSource = `
-export default () => new TransformStream();
-`;
-
-const emitterSource = `
-export default (denops) => {
-  return new WritableStream({
-    async write(chunk) {
-      const literal = "[" +
-        chunk.map((s) => "'" + s.replace(/'/g, "''") + "'").join(",") +
-        "]";
-      await denops.cmd("let g:tataku_test_output = " + literal);
-    },
-  });
-};
-`;
+import { addRuntimepath, copyFixture, waitFor } from "./_helpers.ts";
 
 test({
   mode: "all",
@@ -46,9 +19,14 @@ test({
   fn: async (denops) => {
     const root = await Deno.makeTempDir();
     try {
-      await writeFixture(root, "collector", "main_c", collectorSource);
-      await writeFixture(root, "processor", "main_p", processorSource);
-      await writeFixture(root, "emitter", "main_e", emitterSource);
+      await copyFixture("collector/simple.ts", root, "collector", "main_c");
+      await copyFixture(
+        "processor/passthrough.ts",
+        root,
+        "processor",
+        "main_p",
+      );
+      await copyFixture("emitter/var.ts", root, "emitter", "main_e");
       await addRuntimepath(denops, root);
       await main(denops);
 
