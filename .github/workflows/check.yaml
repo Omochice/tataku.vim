@@ -85,7 +85,8 @@ jobs:
     if: needs.path-filter.outputs.deno == 'true' || needs.path-filter.outputs.flake == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    permissions: {}
+    permissions:
+      pull-requests: write
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
@@ -94,6 +95,8 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
       - run: nix run .#test
+      - uses: k1LoW/octocov-action@b3b6ee60482a667950f87553abf1df63217235d9 # v1.5.1
+        if: always()
   check-renovate-config:
     needs: path-filter
     if: needs.path-filter.outputs.renovate == 'true' || needs.path-filter.outputs.flake == 'true'
