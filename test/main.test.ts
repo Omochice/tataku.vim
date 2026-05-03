@@ -20,14 +20,16 @@ test({
   fn: async (denops) => {
     const root = await Deno.makeTempDir();
     try {
-      await copyFixture("collector/simple.ts", root, "collector", "main_c");
-      await copyFixture(
-        "processor/passthrough.ts",
-        root,
-        "processor",
-        "main_p",
-      );
-      await copyFixture("emitter/var.ts", root, "emitter", "main_e");
+      await Promise.all([
+        copyFixture("collector/simple.ts", root, "collector", "main_c"),
+        copyFixture(
+          "processor/passthrough.ts",
+          root,
+          "processor",
+          "main_p",
+        ),
+        copyFixture("emitter/var.ts", root, "emitter", "main_e"),
+      ]);
       await addRuntimepath(denops, root);
       await main(denops);
 

@@ -9,9 +9,11 @@ test({
   fn: async (denops) => {
     const root = await Deno.makeTempDir();
     try {
-      await copyFixture("collector/simple.ts", root, "collector", "ps_c");
-      await copyFixture("processor/passthrough.ts", root, "processor", "ps_p");
-      await copyFixture("emitter/empty.ts", root, "emitter", "ps_e");
+      await Promise.all([
+        copyFixture("collector/simple.ts", root, "collector", "ps_c"),
+        copyFixture("processor/passthrough.ts", root, "processor", "ps_p"),
+        copyFixture("emitter/empty.ts", root, "emitter", "ps_e"),
+      ]);
       await addRuntimepath(denops, root);
 
       const recipe = {
@@ -64,13 +66,15 @@ test({
   fn: async (denops) => {
     const root = await Deno.makeTempDir();
     try {
-      await copyFixture(
-        "processor/passthrough.ts",
-        root,
-        "processor",
-        "ps_rep_p",
-      );
-      await copyFixture("emitter/empty.ts", root, "emitter", "ps_rep_e");
+      await Promise.all([
+        copyFixture(
+          "processor/passthrough.ts",
+          root,
+          "processor",
+          "ps_rep_p",
+        ),
+        copyFixture("emitter/empty.ts", root, "emitter", "ps_rep_e"),
+      ]);
       await addRuntimepath(denops, root);
       await addRuntimepath(denops, Deno.cwd());
 

@@ -40,19 +40,22 @@ test({
   mode: "all",
   name: "loadCollector returns err when found in multiple rtp entries",
   fn: async (denops) => {
-    const a = await Deno.makeTempDir();
-    const b = await Deno.makeTempDir();
+    const [a, b] = await Promise.all([Deno.makeTempDir(), Deno.makeTempDir()]);
     try {
-      await copyFixture("collector/simple.ts", a, "collector", "dup_c");
-      await copyFixture("collector/simple.ts", b, "collector", "dup_c");
+      await Promise.all([
+        copyFixture("collector/simple.ts", a, "collector", "dup_c"),
+        copyFixture("collector/simple.ts", b, "collector", "dup_c"),
+      ]);
       await addRuntimepath(denops, a);
       await addRuntimepath(denops, b);
       const result = await loadCollector(denops, "dup_c");
       assertEquals(result.isErr(), true);
       assertStringIncludes(result._unsafeUnwrapErr().message, "found multiply");
     } finally {
-      await Deno.remove(a, { recursive: true });
-      await Deno.remove(b, { recursive: true });
+      await Promise.all([
+        Deno.remove(a, { recursive: true }),
+        Deno.remove(b, { recursive: true }),
+      ]);
     }
   },
 });
@@ -115,19 +118,22 @@ test({
   mode: "all",
   name: "loadProcessor returns err when found in multiple rtp entries",
   fn: async (denops) => {
-    const a = await Deno.makeTempDir();
-    const b = await Deno.makeTempDir();
+    const [a, b] = await Promise.all([Deno.makeTempDir(), Deno.makeTempDir()]);
     try {
-      await copyFixture("processor/passthrough.ts", a, "processor", "dup_p");
-      await copyFixture("processor/passthrough.ts", b, "processor", "dup_p");
+      await Promise.all([
+        copyFixture("processor/passthrough.ts", a, "processor", "dup_p"),
+        copyFixture("processor/passthrough.ts", b, "processor", "dup_p"),
+      ]);
       await addRuntimepath(denops, a);
       await addRuntimepath(denops, b);
       const result = await loadProcessor(denops, "dup_p");
       assertEquals(result.isErr(), true);
       assertStringIncludes(result._unsafeUnwrapErr().message, "found multiply");
     } finally {
-      await Deno.remove(a, { recursive: true });
-      await Deno.remove(b, { recursive: true });
+      await Promise.all([
+        Deno.remove(a, { recursive: true }),
+        Deno.remove(b, { recursive: true }),
+      ]);
     }
   },
 });
@@ -185,19 +191,22 @@ test({
   mode: "all",
   name: "loadEmitter returns err when found in multiple rtp entries",
   fn: async (denops) => {
-    const a = await Deno.makeTempDir();
-    const b = await Deno.makeTempDir();
+    const [a, b] = await Promise.all([Deno.makeTempDir(), Deno.makeTempDir()]);
     try {
-      await copyFixture("emitter/empty.ts", a, "emitter", "dup_e");
-      await copyFixture("emitter/empty.ts", b, "emitter", "dup_e");
+      await Promise.all([
+        copyFixture("emitter/empty.ts", a, "emitter", "dup_e"),
+        copyFixture("emitter/empty.ts", b, "emitter", "dup_e"),
+      ]);
       await addRuntimepath(denops, a);
       await addRuntimepath(denops, b);
       const result = await loadEmitter(denops, "dup_e");
       assertEquals(result.isErr(), true);
       assertStringIncludes(result._unsafeUnwrapErr().message, "found multiply");
     } finally {
-      await Deno.remove(a, { recursive: true });
-      await Deno.remove(b, { recursive: true });
+      await Promise.all([
+        Deno.remove(a, { recursive: true }),
+        Deno.remove(b, { recursive: true }),
+      ]);
     }
   },
 });
