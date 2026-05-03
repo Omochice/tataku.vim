@@ -12,6 +12,10 @@
       url = "github:Omochice/nur-packages";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    denops-vim = {
+      url = "github:vim-denops/denops.vim";
+      flake = false;
+    };
   };
 
   outputs =
@@ -21,6 +25,7 @@
       treefmt-nix,
       flake-utils,
       nur,
+      denops-vim,
     }:
     flake-utils.lib.eachDefaultSystem (
       system:
@@ -83,9 +88,18 @@
           renovate = [
             pkgs.renovate
           ];
+          test = deno ++ [
+            pkgs.neovim
+            pkgs.vim
+          ];
           # keep-sorted end
           default = actions ++ deno ++ renovate ++ [ treefmt.config.build.wrapper ];
         };
+        testEnv = ''
+          export DENOPS_TEST_DENOPS_PATH=${denops-vim}
+          export DENOPS_TEST_VIM_EXECUTABLE=${pkgs.vim}/bin/vim
+          export DENOPS_TEST_NVIM_EXECUTABLE=${pkgs.neovim}/bin/nvim
+        '';
       in
       {
         # keep-sorted start block=yes
@@ -102,12 +116,27 @@
             deno task check
             deno task lint
           '' [ (runAs "check-deno" devPackages.deno) ];
+          check-test = pkgs.lib.pipe ''
+            ${testEnv}
+            deno task test:unit
+            deno task test:integration
+          '' [ (runAs "check-test" devPackages.test) ];
         };
         checks = {
           formatting = treefmt.config.build.check self;
         };
         devShells = pkgs.lib.pipe devPackages [
           (pkgs.lib.attrsets.mapAttrs (name: buildInputs: pkgs.mkShell { inherit buildInputs; }))
+          (
+            shells:
+            shells
+            // {
+              test = pkgs.mkShell {
+                buildInputs = devPackages.test;
+                shellHook = testEnv;
+              };
+            }
+          )
         ];
         formatter = treefmt.config.build.wrapper;
         # keep-sorted end
