@@ -1,4 +1,4 @@
-import { assertEquals, assertStringIncludes } from "jsr:@std/assert@1.0.13";
+import { expect } from "jsr:@std/expect@1.0.17";
 import { test } from "jsr:@denops/test@4.0.0";
 import { join } from "jsr:@std/path@1.1.4";
 import { globals } from "jsr:@denops/std@8.2.0/variable";
@@ -10,7 +10,7 @@ test({
   name: "main registers a run dispatcher",
   fn: async (denops) => {
     await main(denops);
-    assertEquals(typeof denops.dispatcher.run, "function");
+    expect(typeof denops.dispatcher.run).toEqual("function");
   },
 });
 
@@ -44,7 +44,7 @@ test({
         (await globals.get(denops, "tataku_test_output", null)) !== null
       );
       const observed = await globals.get(denops, "tataku_test_output");
-      assertEquals(observed, ["hello", "world"]);
+      expect(observed).toEqual(["hello", "world"]);
     } finally {
       await Deno.remove(root, { recursive: true });
     }
@@ -81,7 +81,7 @@ test({
         "tataku_test_error",
         "",
       );
-      assertStringIncludes(observed, "The recipe is invalid format");
+      expect(observed).toContain("The recipe is invalid format");
     } finally {
       await Deno.remove(root, { recursive: true });
     }
