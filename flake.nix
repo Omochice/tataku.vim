@@ -116,11 +116,11 @@
             deno task check
             deno task lint
           '' [ (runAs "check-deno" devPackages.deno) ];
-          check-test = pkgs.lib.pipe ''
+          test = pkgs.lib.pipe ''
             ${testEnv}
             deno task test:unit
             deno task test:integration
-          '' [ (runAs "check-test" devPackages.test) ];
+          '' [ (runAs "test" devPackages.test) ];
         };
         checks = {
           formatting = treefmt.config.build.check self;
