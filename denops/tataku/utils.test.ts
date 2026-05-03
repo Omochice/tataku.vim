@@ -1,5 +1,5 @@
 import { describe, it } from "jsr:@std/testing@1.0.13/bdd";
-import { assertEquals, assertStrictEquals } from "jsr:@std/assert@1.0.13";
+import { expect } from "jsr:@std/expect@1.0.17";
 import { DenopsStub } from "jsr:@denops/test@4.0.0/stub";
 import { convertError, echoError, handleError } from "./utils.ts";
 
@@ -7,30 +7,30 @@ describe("convertError", () => {
   it("returns the original Error instance unchanged", () => {
     const original = new Error("boom");
     const converted = convertError("ignored")(original);
-    assertStrictEquals(converted, original);
+    expect(converted).toBe(original);
   });
 
   it("wraps non-Error with default message 'Failed' and preserves cause", () => {
     const err = convertError()("boom");
-    assertEquals(err.message, "Failed");
-    assertEquals(err.cause, "boom");
+    expect(err.message).toEqual("Failed");
+    expect(err.cause).toEqual("boom");
   });
 
   it("uses the provided message for non-Error inputs", () => {
     const err = convertError("custom message")("boom");
-    assertEquals(err.message, "custom message");
-    assertEquals(err.cause, "boom");
+    expect(err.message).toEqual("custom message");
+    expect(err.cause).toEqual("boom");
   });
 
   it("preserves object causes by reference", () => {
     const cause = { foo: 1 };
     const err = convertError()(cause);
-    assertStrictEquals(err.cause, cause);
+    expect(err.cause).toBe(cause);
   });
 
   it("preserves undefined cause", () => {
     const err = convertError()(undefined);
-    assertEquals(err.cause, undefined);
+    expect(err.cause).toEqual(undefined);
   });
 });
 
@@ -44,7 +44,7 @@ describe("echoError", () => {
       },
     });
     await echoError(denops, "hello");
-    assertEquals(calls, [{
+    expect(calls).toEqual([{
       fn: "tataku#util#echo_error",
       args: ["hello"],
     }]);
@@ -61,7 +61,7 @@ describe("handleError", () => {
       },
     });
     await handleError(denops, "collector", "foo", new Error("boom"));
-    assertEquals(calls, [{
+    expect(calls).toEqual([{
       fn: "tataku#util#echo_error",
       args: ["Error occurred in collector-foo: boom"],
     }]);
@@ -76,7 +76,7 @@ describe("handleError", () => {
       },
     });
     await handleError(denops, "processor", "bar", "raw value");
-    assertEquals(calls, [{
+    expect(calls).toEqual([{
       fn: "tataku#util#echo_error",
       args: ["Unexpected throwing in processor-bar: raw value"],
     }]);
