@@ -55,21 +55,3 @@ export async function waitFor(
   }
   throw new Error(`waitFor: timeout after ${timeout}ms`);
 }
-
-/**
- * Poll until `path` exists, then return its UTF-8 content.
- */
-export async function readFileWhenReady(
-  path: string,
-  options?: { timeout?: number; interval?: number },
-): Promise<string> {
-  await waitFor(async () => {
-    try {
-      await Deno.stat(path);
-      return true;
-    } catch {
-      return false;
-    }
-  }, options);
-  return Deno.readTextFile(path);
-}
