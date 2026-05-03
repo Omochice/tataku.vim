@@ -7,13 +7,8 @@ async function readAll(
   stream: ReadableStream<string[]>,
 ): Promise<string[][]> {
   const chunks: string[][] = [];
-  const reader = stream.getReader();
-  while (true) {
-    const { done, value } = await reader.read();
-    if (done) {
-      break;
-    }
-    chunks.push(value);
+  for await (const chunk of stream) {
+    chunks.push(chunk);
   }
   return chunks;
 }
