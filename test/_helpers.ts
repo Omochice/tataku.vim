@@ -1,5 +1,7 @@
 import type { Denops } from "jsr:@denops/std@8.2.0";
-import { join } from "jsr:@std/path@1.1.4";
+import { fromFileUrl, join } from "jsr:@std/path@1.1.4";
+
+const FIXTURES_DIR = fromFileUrl(import.meta.resolve("./fixtures"));
 
 export type Kind = "collector" | "processor" | "emitter";
 
@@ -19,6 +21,26 @@ export async function writeFixture(
   const file = join(dir, `${name}.ts`);
   await Deno.writeTextFile(file, source);
   return file;
+}
+
+/**
+ * Copy a file from `test/fixtures/{fixtureRelPath}` into
+ * `{rtpRoot}/denops/@tataku/{kind}/{name}.ts`.
+ *
+ * @returns Absolute path of the written file.
+ */
+export async function copyFixture(
+  fixtureRelPath: string,
+  rtpRoot: string,
+  kind: Kind,
+  name: string,
+): Promise<string> {
+  const sourcePath = join(FIXTURES_DIR, fixtureRelPath);
+  const destDir = join(rtpRoot, "denops", "@tataku", kind);
+  await Deno.mkdir(destDir, { recursive: true });
+  const destFile = join(destDir, `${name}.ts`);
+  await Deno.copyFile(sourcePath, destFile);
+  return destFile;
 }
 
 /**
