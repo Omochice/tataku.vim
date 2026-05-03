@@ -1,4 +1,4 @@
-import { assertEquals, assertStringIncludes } from "jsr:@std/assert@1.0.13";
+import { expect } from "jsr:@std/expect@1.0.17";
 import { test } from "jsr:@denops/test@4.0.0";
 import { prepareStreams } from "../denops/tataku/tataku.ts";
 import { addRuntimepath, copyFixture } from "./_helpers.ts";
@@ -22,11 +22,11 @@ test({
         emitter: { name: "ps_e" },
       };
       const result = await prepareStreams(denops, recipe);
-      assertEquals(result.isOk(), true);
+      expect(result.isOk()).toEqual(true);
       const streams = result._unsafeUnwrap();
-      assertEquals(streams.collector instanceof ReadableStream, true);
-      assertEquals(streams.processor instanceof TransformStream, true);
-      assertEquals(streams.emitter instanceof WritableStream, true);
+      expect(streams.collector instanceof ReadableStream).toEqual(true);
+      expect(streams.processor instanceof TransformStream).toEqual(true);
+      expect(streams.emitter instanceof WritableStream).toEqual(true);
     } finally {
       await Deno.remove(root, { recursive: true });
     }
@@ -38,9 +38,8 @@ test({
   name: "prepareStreams returns err when recipe is invalid",
   fn: async (denops) => {
     const result = await prepareStreams(denops, { foo: "bar" });
-    assertEquals(result.isErr(), true);
-    assertStringIncludes(
-      result._unsafeUnwrapErr().message,
+    expect(result.isErr()).toEqual(true);
+    expect(result._unsafeUnwrapErr().message).toContain(
       "The recipe is invalid format",
     );
   },
@@ -69,7 +68,7 @@ test({
         emitter: { name: "ps_missing_e" },
       };
       const result = await prepareStreams(denops, recipe);
-      assertEquals(result.isErr(), true);
+      expect(result.isErr()).toEqual(true);
     } finally {
       await Deno.remove(root, { recursive: true });
     }
@@ -100,7 +99,7 @@ test({
         emitter: { name: "ps_rep_e" },
       };
       const result = await prepareStreams(denops, recipe, ["a", "b"]);
-      assertEquals(result.isOk(), true);
+      expect(result.isOk()).toEqual(true);
     } finally {
       await Deno.remove(root, { recursive: true });
     }
@@ -117,9 +116,8 @@ test({
       emitter: { name: "e" },
     };
     const result = await prepareStreams(denops, recipe, null);
-    assertEquals(result.isErr(), true);
-    assertStringIncludes(
-      result._unsafeUnwrapErr().message,
+    expect(result.isErr()).toEqual(true);
+    expect(result._unsafeUnwrapErr().message).toContain(
       "replacing collector is failed",
     );
   },
