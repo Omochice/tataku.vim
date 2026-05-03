@@ -1,7 +1,11 @@
 import { assertEquals, assertStringIncludes } from "jsr:@std/assert@1.0.13";
 import { test } from "jsr:@denops/test@4.0.0";
-import { loadCollector, loadEmitter, loadProcessor } from "./load.ts";
-import { addRuntimepath, writeFixture } from "./_test_helpers.ts";
+import {
+  loadCollector,
+  loadEmitter,
+  loadProcessor,
+} from "../denops/tataku/load.ts";
+import { addRuntimepath, writeFixture } from "./_helpers.ts";
 
 const collectorSource = `
 export default () =>

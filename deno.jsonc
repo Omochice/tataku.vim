@@ -4,8 +4,8 @@
     "fmt": "deno fmt ./**/*.ts",
     "fmt:check": "deno fmt --check ./**/*.ts",
     "lint": "deno lint ./**/*.ts",
-    "test:integration": "deno test --allow-all 'denops/**/*.integration.test.ts'",
-    "test:unit": "deno test --allow-env --allow-read --ignore='denops/**/*.integration.test.ts'"
+    "test:integration": "deno test --allow-all test/",
+    "test:unit": "deno test --allow-env --allow-read denops/"
   },
   "lock": false,
   "fmt": {

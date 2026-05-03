@@ -1,13 +1,13 @@
 import { assertEquals, assertStringIncludes } from "jsr:@std/assert@1.0.13";
 import { test } from "jsr:@denops/test@4.0.0";
 import { join } from "jsr:@std/path@1.1.4";
-import { main } from "./main.ts";
+import { main } from "../denops/tataku/main.ts";
 import {
   addRuntimepath,
   readFileWhenReady,
   waitFor,
   writeFixture,
-} from "./_test_helpers.ts";
+} from "./_helpers.ts";
 
 const collectorSource = `
 export default () =>
