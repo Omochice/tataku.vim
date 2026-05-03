@@ -2,12 +2,7 @@ import { assertEquals, assertStringIncludes } from "jsr:@std/assert@1.0.13";
 import { test } from "jsr:@denops/test@4.0.0";
 import { join } from "jsr:@std/path@1.1.4";
 import { main } from "../denops/tataku/main.ts";
-import {
-  addRuntimepath,
-  readFileWhenReady,
-  waitFor,
-  writeFixture,
-} from "./_helpers.ts";
+import { addRuntimepath, waitFor, writeFixture } from "./_helpers.ts";
 
 const collectorSource = `
 export default () =>
@@ -24,11 +19,13 @@ export default () => new TransformStream();
 `;
 
 const emitterSource = `
-export default (_, options) => {
-  const path = options.path;
+export default (denops) => {
   return new WritableStream({
     async write(chunk) {
-      await Deno.writeTextFile(path, chunk.join("\\n"));
+      const literal = "[" +
+        chunk.map((s) => "'" + s.replace(/'/g, "''") + "'").join(",") +
+        "]";
+      await denops.cmd("let g:tataku_test_output = " + literal);
     },
   });
 };
@@ -48,7 +45,6 @@ test({
   name: "main.run pipes a valid recipe end-to-end into the emitter",
   fn: async (denops) => {
     const root = await Deno.makeTempDir();
-    const outputPath = join(root, "output.txt");
     try {
       await writeFixture(root, "collector", "main_c", collectorSource);
       await writeFixture(root, "processor", "main_p", processorSource);
@@ -59,12 +55,18 @@ test({
       const recipe = {
         collector: { name: "main_c" },
         processor: [{ name: "main_p" }],
-        emitter: { name: "main_e", options: { path: outputPath } },
+        emitter: { name: "main_e" },
       };
       await denops.dispatcher.run(recipe);
 
-      const content = await readFileWhenReady(outputPath);
-      assertEquals(content, "hello\nworld");
+      await waitFor(async () => {
+        const v = await denops.eval(
+          "exists('g:tataku_test_output') ? 1 : 0",
+        ) as number;
+        return v === 1;
+      });
+      const observed = await denops.eval("g:tataku_test_output");
+      assertEquals(observed, ["hello", "world"]);
     } finally {
       await Deno.remove(root, { recursive: true });
     }
