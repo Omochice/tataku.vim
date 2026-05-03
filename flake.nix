@@ -118,8 +118,12 @@
           '' [ (runAs "check-deno" devPackages.deno) ];
           test = pkgs.lib.pipe ''
             ${testEnv}
-            deno task test:unit
-            deno task test:integration
+            rm -rf coverage coverage.lcov
+            test_status=0
+            deno task test:unit || test_status=$?
+            deno task test:integration || test_status=$?
+            deno coverage coverage --lcov --output=coverage.lcov || true
+            exit "$test_status"
           '' [ (runAs "test" devPackages.test) ];
         };
         checks = {
