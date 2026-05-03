@@ -1,4 +1,4 @@
-import { assertEquals, assertStringIncludes } from "jsr:@std/assert@1.0.13";
+import { expect } from "jsr:@std/expect@1.0.17";
 import { test } from "jsr:@denops/test@4.0.0";
 import {
   loadCollector,
@@ -16,7 +16,7 @@ test({
       await copyFixture("collector/simple.ts", root, "collector", "found_c");
       await addRuntimepath(denops, root);
       const result = await loadCollector(denops, "found_c");
-      assertEquals(result.isOk(), true);
+      expect(result.isOk()).toEqual(true);
     } finally {
       await Deno.remove(root, { recursive: true });
     }
@@ -28,9 +28,8 @@ test({
   name: "loadCollector returns err when not in rtp",
   fn: async (denops) => {
     const result = await loadCollector(denops, "missing_c");
-    assertEquals(result.isErr(), true);
-    assertStringIncludes(
-      result._unsafeUnwrapErr().message,
+    expect(result.isErr()).toEqual(true);
+    expect(result._unsafeUnwrapErr().message).toContain(
       "is not found in rtp",
     );
   },
@@ -49,8 +48,8 @@ test({
       await addRuntimepath(denops, a);
       await addRuntimepath(denops, b);
       const result = await loadCollector(denops, "dup_c");
-      assertEquals(result.isErr(), true);
-      assertStringIncludes(result._unsafeUnwrapErr().message, "found multiply");
+      expect(result.isErr()).toEqual(true);
+      expect(result._unsafeUnwrapErr().message).toContain("found multiply");
     } finally {
       await Promise.all([
         Deno.remove(a, { recursive: true }),
@@ -69,9 +68,8 @@ test({
       await copyFixture("not_function.ts", root, "collector", "bad_c");
       await addRuntimepath(denops, root);
       const result = await loadCollector(denops, "bad_c");
-      assertEquals(result.isErr(), true);
-      assertStringIncludes(
-        result._unsafeUnwrapErr().message,
+      expect(result.isErr()).toEqual(true);
+      expect(result._unsafeUnwrapErr().message).toContain(
         "loading collector(bad_c) is failed",
       );
     } finally {
@@ -94,7 +92,7 @@ test({
       );
       await addRuntimepath(denops, root);
       const result = await loadProcessor(denops, "found_p");
-      assertEquals(result.isOk(), true);
+      expect(result.isOk()).toEqual(true);
     } finally {
       await Deno.remove(root, { recursive: true });
     }
@@ -106,9 +104,8 @@ test({
   name: "loadProcessor returns err when not in rtp",
   fn: async (denops) => {
     const result = await loadProcessor(denops, "missing_p");
-    assertEquals(result.isErr(), true);
-    assertStringIncludes(
-      result._unsafeUnwrapErr().message,
+    expect(result.isErr()).toEqual(true);
+    expect(result._unsafeUnwrapErr().message).toContain(
       "is not found in rtp",
     );
   },
@@ -127,8 +124,8 @@ test({
       await addRuntimepath(denops, a);
       await addRuntimepath(denops, b);
       const result = await loadProcessor(denops, "dup_p");
-      assertEquals(result.isErr(), true);
-      assertStringIncludes(result._unsafeUnwrapErr().message, "found multiply");
+      expect(result.isErr()).toEqual(true);
+      expect(result._unsafeUnwrapErr().message).toContain("found multiply");
     } finally {
       await Promise.all([
         Deno.remove(a, { recursive: true }),
@@ -147,9 +144,8 @@ test({
       await copyFixture("not_function.ts", root, "processor", "bad_p");
       await addRuntimepath(denops, root);
       const result = await loadProcessor(denops, "bad_p");
-      assertEquals(result.isErr(), true);
-      assertStringIncludes(
-        result._unsafeUnwrapErr().message,
+      expect(result.isErr()).toEqual(true);
+      expect(result._unsafeUnwrapErr().message).toContain(
         "loading processor(bad_p) is failed",
       );
     } finally {
@@ -167,7 +163,7 @@ test({
       await copyFixture("emitter/empty.ts", root, "emitter", "found_e");
       await addRuntimepath(denops, root);
       const result = await loadEmitter(denops, "found_e");
-      assertEquals(result.isOk(), true);
+      expect(result.isOk()).toEqual(true);
     } finally {
       await Deno.remove(root, { recursive: true });
     }
@@ -179,9 +175,8 @@ test({
   name: "loadEmitter returns err when not in rtp",
   fn: async (denops) => {
     const result = await loadEmitter(denops, "missing_e");
-    assertEquals(result.isErr(), true);
-    assertStringIncludes(
-      result._unsafeUnwrapErr().message,
+    expect(result.isErr()).toEqual(true);
+    expect(result._unsafeUnwrapErr().message).toContain(
       "is not found in rtp",
     );
   },
@@ -200,8 +195,8 @@ test({
       await addRuntimepath(denops, a);
       await addRuntimepath(denops, b);
       const result = await loadEmitter(denops, "dup_e");
-      assertEquals(result.isErr(), true);
-      assertStringIncludes(result._unsafeUnwrapErr().message, "found multiply");
+      expect(result.isErr()).toEqual(true);
+      expect(result._unsafeUnwrapErr().message).toContain("found multiply");
     } finally {
       await Promise.all([
         Deno.remove(a, { recursive: true }),
@@ -220,9 +215,8 @@ test({
       await copyFixture("not_function.ts", root, "emitter", "bad_e");
       await addRuntimepath(denops, root);
       const result = await loadEmitter(denops, "bad_e");
-      assertEquals(result.isErr(), true);
-      assertStringIncludes(
-        result._unsafeUnwrapErr().message,
+      expect(result.isErr()).toEqual(true);
+      expect(result._unsafeUnwrapErr().message).toContain(
         "loading emitter(bad_e) is failed",
       );
     } finally {
