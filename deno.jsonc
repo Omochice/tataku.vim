@@ -4,8 +4,8 @@
     "fmt": "deno fmt ./**/*.ts",
     "fmt:check": "deno fmt --check ./**/*.ts",
     "lint": "deno lint ./**/*.ts",
-    "test:integration": "deno test --allow-read --allow-write --allow-env --allow-net=127.0.0.1 --allow-run test/",
-    "test:unit": "deno test --allow-env --allow-read denops/"
+    "test:integration": "deno test --coverage=coverage --allow-read --allow-write --allow-env --allow-net=127.0.0.1 --allow-run test/",
+    "test:unit": "deno test --coverage=coverage --allow-env --allow-read denops/"
   },
   "lock": false,
   "fmt": {
