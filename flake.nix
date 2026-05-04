@@ -119,10 +119,7 @@
           test = pkgs.lib.pipe ''
             ${testEnv}
             rm -rf coverage
-            test_status=0
-            deno task test || test_status=$?
-            deno coverage coverage --lcov --output=coverage/lcov.info || true
-            exit "$test_status"
+            deno task test --coverage=coverage
           '' [ (runAs "test" devPackages.test) ];
         };
         checks = {
