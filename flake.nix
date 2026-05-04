@@ -119,7 +119,10 @@
           test = pkgs.lib.pipe ''
             ${testEnv}
             rm -rf coverage
-            deno task test --coverage=coverage
+            deno task test --coverage=coverage --coverage-raw-data-only
+            deno coverage coverage \
+              --lcov --output=coverage/lcov.info \
+              --exclude='^file:///(private/)?(var/folders|tmp)/'
           '' [ (runAs "test" devPackages.test) ];
         };
         checks = {
