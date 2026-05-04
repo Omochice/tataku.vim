@@ -81,5 +81,4 @@ Temporary Items
 
 .deps
 coverage/
-coverage.lcov
 nvim.log

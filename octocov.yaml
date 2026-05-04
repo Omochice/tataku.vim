@@ -1,6 +1,6 @@
 coverage:
   paths:
-    - coverage.lcov
+    - coverage/lcov.info
 comment:
   if: is_pull_request
 report:
