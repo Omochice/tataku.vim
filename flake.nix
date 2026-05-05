@@ -118,11 +118,13 @@
           '' [ (runAs "check-deno" devPackages.deno) ];
           test = pkgs.lib.pipe ''
             ${testEnv}
-            rm -rf coverage
+            rm -rf coverage .test-tmp
+            mkdir -p .test-tmp
+            export TMPDIR="$PWD/.test-tmp"
             deno task test --coverage=coverage --coverage-raw-data-only
             deno coverage coverage \
               --lcov --output=coverage/lcov.info \
-              --exclude='^file:///(private/)?(var/folders|tmp)/'
+              --exclude='/\.test-tmp/'
           '' [ (runAs "test" devPackages.test) ];
         };
         checks = {
