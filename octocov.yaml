@@ -1,0 +1,7 @@
+coverage:
+  paths:
+    - coverage/lcov.info
+comment:
+  if: is_pull_request
+report:
+  if: is_default_branch

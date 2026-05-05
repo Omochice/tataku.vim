@@ -11,7 +11,7 @@ type Streams = {
   emitter: Emitter;
 };
 
-class CombinedProcessorStream extends TransformStream<string[]> {
+export class CombinedProcessorStream extends TransformStream<string[]> {
   override readable: ReadableStream<string[]>;
   override writable: WritableStream<string[]>;
   constructor(streams: Processor[]) {
@@ -73,7 +73,7 @@ export function prepareStreams(
     );
 }
 
-function checkRecipe(
+export function checkRecipe(
   recipe: unknown,
   replacement?: unknown,
 ): Result<Recipe, Error> {

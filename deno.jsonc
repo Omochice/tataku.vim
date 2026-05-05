@@ -1,9 +1,12 @@
 {
   "tasks": {
+    "check": "deno check ./**/*.ts",
     "fmt": "deno fmt ./**/*.ts",
     "fmt:check": "deno fmt --check ./**/*.ts",
-    "check": "deno check ./**/*.ts",
-    "lint": "deno lint ./**/*.ts"
+    "lint": "deno lint ./**/*.ts",
+    "test": "deno test --allow-read --allow-write --allow-env --allow-net=127.0.0.1 --allow-run denops/ test/",
+    "test:integration": "deno test --allow-read --allow-write --allow-env --allow-net=127.0.0.1 --allow-run test/",
+    "test:unit": "deno test --allow-env --allow-read denops/"
   },
   "lock": false,
   "fmt": {

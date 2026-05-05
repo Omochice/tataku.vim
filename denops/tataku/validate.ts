@@ -6,8 +6,12 @@ const recipePage = is.ObjectOf({
   options: as.Optional(is.Record),
 }) satisfies Predicate<RecipePage>;
 
-export const validate = is.ObjectOf({
+const isRecipeShape = is.ObjectOf({
   collector: recipePage,
   processor: is.ArrayOf(recipePage),
   emitter: recipePage,
-}) satisfies Predicate<Recipe>;
+});
+
+export const validate =
+  ((x: unknown): x is Recipe =>
+    isRecipeShape(x) && x.processor.length > 0) satisfies Predicate<Recipe>;

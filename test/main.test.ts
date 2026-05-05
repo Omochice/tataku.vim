@@ -1,0 +1,89 @@
+import { expect } from "jsr:@std/expect@1.0.17";
+import { test } from "jsr:@denops/test@4.0.0";
+import { join } from "jsr:@std/path@1.1.4";
+import { globals } from "jsr:@denops/std@8.2.0/variable";
+import { main } from "../denops/tataku/main.ts";
+import { addRuntimepath, copyFixture, waitFor } from "./_helpers.ts";
+
+test({
+  mode: "all",
+  name: "main registers a run dispatcher",
+  fn: async (denops) => {
+    await main(denops);
+    expect(typeof denops.dispatcher.run).toEqual("function");
+  },
+});
+
+test({
+  mode: "all",
+  name: "main.run pipes a valid recipe end-to-end into the emitter",
+  fn: async (denops) => {
+    const root = await Deno.makeTempDir();
+    try {
+      await Promise.all([
+        copyFixture("collector/simple.ts", root, "collector", "main_c"),
+        copyFixture(
+          "processor/passthrough.ts",
+          root,
+          "processor",
+          "main_p",
+        ),
+        copyFixture("emitter/var.ts", root, "emitter", "main_e"),
+      ]);
+      await addRuntimepath(denops, root);
+      await main(denops);
+
+      const recipe = {
+        collector: { name: "main_c" },
+        processor: [{ name: "main_p" }],
+        emitter: { name: "main_e" },
+      };
+      await denops.dispatcher.run(recipe);
+
+      await waitFor(async () =>
+        (await globals.get(denops, "tataku_test_output", null)) !== null
+      );
+      const observed = await globals.get(denops, "tataku_test_output");
+      expect(observed).toEqual(["hello", "world"]);
+    } finally {
+      await Deno.remove(root, { recursive: true });
+    }
+  },
+});
+
+test({
+  mode: "all",
+  name: "main.run reports an invalid recipe through tataku#util#echo_error",
+  fn: async (denops) => {
+    const root = await Deno.makeTempDir();
+    try {
+      const utilDir = join(root, "autoload", "tataku");
+      await Deno.mkdir(utilDir, { recursive: true });
+      await Deno.writeTextFile(
+        join(utilDir, "util.vim"),
+        [
+          "function! tataku#util#echo_error(msg) abort",
+          "  let g:tataku_test_error = a:msg",
+          "endfunction",
+          "",
+        ].join("\n"),
+      );
+      await addRuntimepath(denops, root);
+      await main(denops);
+
+      await denops.dispatcher.run({ foo: "bar" });
+      await waitFor(async () =>
+        (await globals.get(denops, "tataku_test_error", "")).length >
+          0
+      );
+      const observed = await globals.get(
+        denops,
+        "tataku_test_error",
+        "",
+      );
+      expect(observed).toContain("The recipe is invalid format");
+    } finally {
+      await Deno.remove(root, { recursive: true });
+    }
+  },
+});

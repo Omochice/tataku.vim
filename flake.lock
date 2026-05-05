@@ -1,5 +1,21 @@
 {
   "nodes": {
+    "denops-vim": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1774176782,
+        "narHash": "sha256-lj8yjZrwE9GfNPDIpH4tCI4TTJHkYRlFFCTdqMqWtZg=",
+        "owner": "vim-denops",
+        "repo": "denops.vim",
+        "rev": "1df7a022d6e9cb3f6a3db43235e0f174ccd79e03",
+        "type": "github"
+      },
+      "original": {
+        "owner": "vim-denops",
+        "repo": "denops.vim",
+        "type": "github"
+      }
+    },
     "flake-utils": {
       "inputs": {
         "systems": "systems"
@@ -57,6 +73,7 @@
     },
     "root": {
       "inputs": {
+        "denops-vim": "denops-vim",
         "flake-utils": "flake-utils",
         "nixpkgs": "nixpkgs",
         "nur": "nur",
