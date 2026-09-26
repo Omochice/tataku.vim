@@ -1,4 +1,4 @@
-import { describe, it } from "jsr:@std/testing@1.0.13/bdd";
+import { describe, it } from "jsr:@std/testing@1.0.21/bdd";
 import { expect } from "jsr:@std/expect@1.0.20";
 import { checkRecipe, CombinedProcessorStream } from "./tataku.ts";
 
