@@ -1,5 +1,5 @@
 import { describe, it } from "jsr:@std/testing@1.0.13/bdd";
-import { expect } from "jsr:@std/expect@1.0.17";
+import { expect } from "jsr:@std/expect@1.0.20";
 import { DenopsStub } from "jsr:@denops/test@4.0.0/stub";
 import { convertError, echoError, handleError } from "./utils.ts";
 
